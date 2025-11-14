@@ -1,0 +1,2 @@
+我想在tool_my中使用ts
+我想把index.ts 导出 并且打包 然后在back1中安装tool_my

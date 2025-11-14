@@ -1,0 +1,139 @@
+enum ApplicationType {
+  REFUND
+  ADJUSTMENT
+  ADD_PRICE
+}
+
+enum ApplicationState {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WalletRecordType {
+  RECHARGE
+  WITHDRAWAL
+  CONSUME
+  REFUND
+  INCOME
+}
+
+enum PayMethod {
+  WXPAY
+  ALIPAY
+  WALLET
+  BANK
+  CREDIT
+}
+
+enum OrderType {
+  MODEL
+  PRINT
+  SCAN
+  DESIGN
+  CNC
+  HAND
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PRODUCING
+  PRODUCED
+  SHIPPED
+  RECEIVED
+  COMPLETED
+  CANCELED
+  REFUND_APPLIED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum MoneyFlowType {
+  ORDER_PAY
+  REFUND
+  ADJUST_REFUND
+  ADJUST_COLLECT
+  WALLET_RECHARGE
+  WALLET_WITHDRAWAL
+  CREDIT_REPAYMENT
+  MANUAL_ADJUSTMENT
+}
+
+enum EntryDirection {
+  INCREASE
+  DECREASE
+}
+
+enum StatementLineType {
+  CONSUMPTION
+  INCOME
+  REFUND
+  ADJUST_REFUND
+  ADJUST_COLLECT
+  RECHARGE
+  WITHDRAWAL
+  REPAYMENT
+  ADJUSTMENT
+}
+
+enum ShipmentType {
+  TOGETHER
+  SEPARATELY
+}
+
+enum ReceiptType {
+  PAPER
+  ELECTRONIC
+}
+
+enum MaterialType {
+  RESIN
+  POLYMER_POWDER
+  METAL_POWDER
+  WIRE
+  CERAMIC
+  NYLON
+  OTHER
+}
+
+enum MaterialProcess {
+  LIGHT_CURE
+  CUT
+  DRILL
+  OTHER
+}
+
+enum File3DType {
+  STL
+  OBJ
+  STP
+  IGS
+}
+
+enum PayOrderStatus {
+  INITIATED
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum BOMCategory {
+  NUT
+  PAINT
+  BRACES
+  MATERIAL
+  OTHER
+}

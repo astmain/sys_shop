@@ -1,0 +1,920 @@
+// generator client {
+//   provider        = "prisma-client-js"
+//   output          = "../client/postgresql"
+//   previewFeatures = ["driverAdapters"]
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+/// *
+///  * 所有金额,需要在数据库层约束 做非负限制
+///  * ALTER TABLE "YourTable"
+///  * ADD CONSTRAINT paid_amount_non_negative CHECK ("paid_amount" >= 0);
+model User {
+  id                      Int                @id @default(autoincrement())
+  username                String             @db.VarChar(50)
+  password                String             @db.VarChar(255)
+  email                   String?            @db.VarChar(50)
+  phone                   String             @unique @db.Char(11)
+  birthday                String?
+  gender                  String?
+  status                  Boolean            @default(true)
+  wechatId                String?            @unique @map("wechat_id")
+  isDeleted               Boolean            @default(false) @map("is_deleted")
+  createdAt               DateTime           @default(now()) @map("created_at")
+  updatedAt               DateTime           @updatedAt @map("updated_at")
+  departmentId            Int?               @map("department_id")
+  avatar                  String?            @default("https://server.oss.yun3d.com/oss_api/static_stream?path_static=/public/1/avatar_default.png") @db.VarChar(255)
+  applicationsAsApplicant Application[]      @relation("Applicant")
+  applicationsAsReviewer  Application[]      @relation("Reviewer")
+  addressInfo             AddressInfo[]
+  BillRecord              BillRecord[]
+  cart                    Cart[]
+  contactInfo             ContactInfo[]
+  fileInfo                FileInfo[]
+  invoiceInfo             InvoiceInfo[]
+  order                   OrderInfo[]
+  payPassword             PayPassword?
+  paymentCredential       PaymentCredential? @relation("UserPaymentCredential")
+  payOrderLogs            PayOrderLog[]
+  point                   Point?             @relation("UserPoint")
+  pointRecords            PointRecord[]
+  department              Department?        @relation(fields: [departmentId], references: [id])
+  wechatInfo              WechatInfo?        @relation(fields: [wechatId], references: [unionid])
+  wallet                  Wallet?            @relation("UserWallet")
+  roles                   Role[]             @relation("UserRoles")
+
+  @@index([phone])
+  @@map("user")
+}
+
+model WechatInfo {
+  id           Int      @id @default(autoincrement())
+  accessToken  String   @map("access_token")
+  refreshToken String   @map("refresh_token")
+  openid       String
+  unionid      String   @unique
+  nickname     String
+  headimgurl   String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User?
+
+  @@index([openid])
+  @@map("wechat_info")
+}
+
+model tb_kefu {
+  id      Int    @id @default(autoincrement())
+  kefu_id String @unique
+  name    String @default("")
+  qr_code String @default("")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique @db.VarChar(50)
+  remark      String?      @db.VarChar(100)
+  status      Boolean      @default(true)
+  isDeleted   Boolean      @default(false) @map("is_deleted")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+  menus       Menu[]       @relation("RoleMenus")
+  permissions Permission[] @relation("RolePermissions")
+  users       User[]       @relation("UserRoles")
+
+  @@index([isDeleted])
+  @@map("role")
+}
+
+model Department {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique @db.VarChar(50)
+  status    Boolean      @default(true)
+  remark    String?      @db.VarChar(100)
+  parentId  Int?         @map("parent_id")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  icon      String?      @default("") @db.VarChar(50)
+  parent    Department?  @relation("DepartmentSelf", fields: [parentId], references: [id])
+  children  Department[] @relation("DepartmentSelf")
+  users     User[]
+
+  @@unique([parentId, name])
+  @@index([parentId])
+  @@map("department")
+}
+
+model Menu {
+  id             Int          @id @default(autoincrement())
+  name           String       @unique @db.VarChar(50)
+  path           String       @db.VarChar(100)
+  redirect       String?      @db.VarChar(100)
+  type           Int?
+  component      String       @db.VarChar(100)
+  sort           Int?         @default(0)
+  status         Boolean      @default(true)
+  parentId       Int?         @map("parent_id")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  parent         Menu?        @relation("MenuSelf", fields: [parentId], references: [id])
+  children       Menu[]       @relation("MenuSelf")
+  meta           Meta?
+  permissionList Permission[]
+  roles          Role[]       @relation("RoleMenus")
+
+  @@index([parentId])
+  @@index([path])
+  @@map("menu")
+}
+
+model Meta {
+  id         Int       @id @default(autoincrement())
+  title      String?   @db.VarChar(50)
+  icon       String?   @db.VarChar(50)
+  affix      Boolean   @default(false)
+  activeMenu String?   @map("active_menu") @db.VarChar(50)
+  alwaysShow Boolean   @default(false) @map("always_show")
+  breadcrumb Boolean   @default(true)
+  canTo      Boolean   @default(false) @map("can_to")
+  hidden     Boolean   @default(false)
+  noCache    Boolean   @default(false) @map("no_cache")
+  noTagsView Boolean   @default(false) @map("no_tags_view")
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+  menuId     Int       @unique @map("menu_id")
+  menu       Menu      @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@map("meta")
+}
+
+model Permission {
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar(50)
+  value     String   @db.VarChar(50)
+  name      String?  @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  menuId    Int      @map("menu_id")
+  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  roles     Role[]   @relation("RolePermissions")
+
+  @@unique([menuId, value])
+  @@map("permission")
+}
+
+model Dictionary {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(50)
+  code        String     @unique @db.VarChar(50)
+  sort        Int        @default(0)
+  description String?    @db.VarChar(200)
+  status      Boolean    @default(true)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  entries     DicEntry[]
+
+  @@index([code])
+  @@map("dictionary")
+}
+
+model DicEntry {
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(50)
+  code         String     @db.VarChar(50)
+  description  String?    @db.VarChar(200)
+  sort         Int        @default(0)
+  status       Boolean    @default(true)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  dictionaryId Int        @map("dictionary_id")
+  parentId     Int?       @map("parent_id")
+  dictionary   Dictionary @relation(fields: [dictionaryId], references: [id], onDelete: Cascade)
+  parent       DicEntry?  @relation("DicEntrySelf", fields: [parentId], references: [id])
+  children     DicEntry[] @relation("DicEntrySelf")
+
+  @@unique([dictionaryId, code])
+  @@unique([dictionaryId, name])
+  @@index([code])
+  @@map("dic_entry")
+}
+
+model Wallet {
+  id            Int          @id @default(autoincrement())
+  userId        Int          @unique @map("user_id")
+  balance       Float        @default(0.00)
+  frozenBalance Float        @default(0.00) @map("frozen_balance")
+  status        Int          @default(0)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  billrecord    BillRecord[]
+  user          User         @relation("UserWallet", fields: [userId], references: [id])
+
+  @@map("wallet")
+}
+
+model BillRecord {
+  id            Int          @id @default(autoincrement())
+  amount        Float        @default(0.00)
+  balance_after Float        @default(0.00)
+  biz_type      String
+  pay_method    String
+  channel       String
+  order_no      String?      @db.VarChar(50)
+  order_type    String?      @db.VarChar(50)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  description   String?      @db.VarChar(255)
+  userId        Int          @map("user_id")
+  payOrderLogId Int?         @map("pay_order_log_id")
+  walletId      Int?         @map("wallet_id")
+  payOrderLog   PayOrderLog? @relation(fields: [payOrderLogId], references: [id])
+  user          User         @relation(fields: [userId], references: [id])
+  wallet        Wallet?      @relation(fields: [walletId], references: [id])
+
+  @@map("billrecord")
+}
+
+model PayOrderLog {
+  id           Int          @id @default(autoincrement())
+  userId       Int          @map("user_id")
+  pay_method   String       @default("unknown") @db.VarChar(50)
+  change_type  String       @default("unknown") @db.VarChar(50)
+  status       String       @db.VarChar(50)
+  paid_at      DateTime?
+  created_at   DateTime     @default(now()) @map("created_at")
+  amount       Float        @default(0.00)
+  meta         Json?        @default("{}")
+  out_trade_no String?      @unique @db.VarChar(255)
+  trade_no     String?      @db.VarChar(255)
+  paidAmount   Decimal      @default(0.00) @map("paid_amount") @db.Decimal(10, 2)
+  failMeta     Json?        @default("{}") @map("fail_meta")
+  application  Application?
+  BillRecord   BillRecord[]
+  OrderInfo    OrderInfo[]
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@map("payorder_log")
+}
+
+model Application {
+  id             String           @id @default(nanoid(10))
+  orderId        Int
+  type           ApplicationType
+  adjustedNet    Decimal
+  reason         String?
+  state          ApplicationState @default(PENDING)
+  reviewerId     Int?
+  reviewedAt     DateTime?
+  reviewNote     String?
+  applicantId    Int
+  payorder_id    Int?             @unique
+  is_deleted     Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  attachments    Json?            @default("[]")
+  lastPaidAmount Decimal          @map("last_paid_amount") @db.Decimal(10, 2)
+  applicant      User             @relation("Applicant", fields: [applicantId], references: [id])
+  orderInfo      OrderInfo        @relation(fields: [orderId], references: [id])
+  payorder       PayOrderLog?     @relation(fields: [payorder_id], references: [id])
+  reviewer       User?            @relation("Reviewer", fields: [reviewerId], references: [id])
+
+  @@index([orderId, state, type])
+}
+
+model Area {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(100)
+  code       String?  @unique @db.VarChar(20)
+  level      Int      @default(1)
+  sort       Int      @default(0)
+  status     Boolean  @default(true)
+  parent_id  Int?     @map("parent_id")
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+  parent     Area?    @relation("AreaHierarchy", fields: [parent_id], references: [id], onDelete: Cascade)
+  children   Area[]   @relation("AreaHierarchy")
+
+  @@index([parent_id])
+  @@index([level])
+  @@index([status])
+  @@index([code])
+  @@map("area")
+}
+
+model PaymentCredential {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique @map("user_id")
+  password     String    @db.VarChar(255)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  retry_count  Int       @default(0)
+  locked_until DateTime?
+  user         User      @relation("UserPaymentCredential", fields: [userId], references: [id])
+
+  @@map("payment_credential")
+}
+
+model Point {
+  id               Int      @id @default(autoincrement())
+  userId           Int      @unique @map("user_id")
+  available_points Int      @default(0)
+  total_used       Int      @default(0)
+  total_points     Int      @default(0)
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  user             User     @relation("UserPoint", fields: [userId], references: [id])
+
+  @@map("point")
+}
+
+model PointRecord {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @map("user_id")
+  type            Int      @default(0)
+  source_type     Int      @default(0)
+  source_id       Int?
+  amount          Int      @default(0)
+  available_after Int      @default(0)
+  createdAt       DateTime @default(now()) @map("created_at")
+  description     String?  @db.VarChar(255)
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map("point_record")
+}
+
+model FileInfo {
+  id                   Int      @id @default(autoincrement())
+  filename             String   @db.VarChar(255)
+  filepath             String   @db.VarChar(255)
+  screenshot           String?  @db.VarChar(255)
+  uploaderId           Int      @map("uploader_id")
+  sha256               String   @db.Char(64)
+  length               Float    @default(0)
+  width                Float    @default(0)
+  height               Float    @default(0)
+  volume               Float    @default(0)
+  surface              Float    @default(0)
+  triangles            Int      @default(0)
+  points               Int      @default(0)
+  min_thickness        Float    @default(0)
+  thickness_proportion Float    @default(0)
+  geometric_complexity Int      @default(0)
+  structural_strength  Int      @default(0)
+  createdAt            DateTime @default(now()) @map("created_at")
+  is_deleted           Boolean  @default(false)
+  file_type            String
+  file_size            Float    @default(0)
+  cart                 Cart[]
+  uploader             User     @relation(fields: [uploaderId], references: [id])
+
+  @@map("file_info")
+}
+
+model Material {
+  id                     Int      @id @default(autoincrement())
+  code                   String   @db.VarChar(50)
+  name                   String   @db.VarChar(50)
+  price                  Float    @default(0.00)
+  start_price            Float    @default(0.00)
+  color                  String   @db.VarChar(50)
+  process                String   @db.VarChar(50)
+  property               String   @db.VarChar(50)
+  density                Float    @default(0.00)
+  structural_strength    Float    @default(0.00)
+  shrinkage_rate         Float    @default(0.00)
+  advantages             String   @db.VarChar(50)
+  disadvantages          String   @db.VarChar(50)
+  temperature_resistance String   @db.VarChar(50)
+  type                   String   @db.VarChar(50)
+  is_default             Boolean  @default(false)
+  img_url                Json     @default("[]")
+  description            String?  @db.VarChar(100)
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@map("material")
+}
+
+model Specification {
+  id        Int             @id @default(autoincrement())
+  name      String          @db.VarChar(50)
+  is_tag    Boolean         @default(false)
+  parentId  Int?            @map("parent_id")
+  sort      Int             @default(0)
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  parent    Specification?  @relation("SpecificationChildren", fields: [parentId], references: [id])
+  children  Specification[] @relation("SpecificationChildren")
+  list      SpecList[]
+
+  @@map("specification")
+}
+
+model SpecList {
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(50)
+  price           Float         @default(1.00)
+  start_price     Float         @default(0.00)
+  is_default      Boolean       @default(false)
+  specificationId Int
+  sort            Int           @default(0)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  specification   Specification @relation(fields: [specificationId], references: [id], onDelete: Cascade)
+
+  @@map("speclist")
+}
+
+model Attachment {
+  id                 Int      @id @default(autoincrement())
+  cart_hole_img_id   Int?
+  cart_attachment_id Int?
+  mimetype           String   @db.VarChar(50)
+  name               String   @db.VarChar(50)
+  url                String   @db.VarChar(255)
+  size               Int      @default(0)
+  storage_path       String   @db.VarChar(255)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  cart_attachment    Cart?    @relation("CartAttachment", fields: [cart_attachment_id], references: [id], onDelete: Cascade)
+  cart_hole_img      Cart?    @relation("CartHoleImg", fields: [cart_hole_img_id], references: [id], onDelete: Cascade)
+
+  @@map("attachment")
+}
+
+model Cart {
+  id                   Int          @id @default(autoincrement())
+  userId               Int          @map("user_id")
+  fileInfoId           Int          @map("file_info_id")
+  count                Int          @default(0)
+  volume               Float        @default(0.00)
+  surface              Float        @default(0.00)
+  material_info        Json
+  material_final_price Float        @default(0.00)
+  grinding_info        Json
+  grinding_final_price Float        @default(0.00)
+  paint_info           Json
+  paint_final_price    Float        @default(0.00)
+  nut_info             Json
+  nut_final_price      Float        @default(0.00)
+  ceil_height_info     Json
+  ceil_height_price    Float        @default(0.00)
+  is_checked           Boolean      @default(false)
+  is_order             Boolean      @default(false)
+  order_id             Int?
+  is_deleted           Boolean      @default(false)
+  createdAt            DateTime     @default(now()) @map("created_at")
+  updatedAt            DateTime     @updatedAt @map("updated_at")
+  total_price          Float        @default(0.00)
+  total_final_price    Float?
+  attachments          Attachment[] @relation("CartAttachment")
+  hole_imgs            Attachment[] @relation("CartHoleImg")
+  fileInfo             FileInfo     @relation(fields: [fileInfoId], references: [id])
+  order                OrderInfo?   @relation(fields: [order_id], references: [id])
+  user                 User         @relation(fields: [userId], references: [id])
+
+  @@map("cart")
+}
+
+model DeliveryInfo {
+  id          Int      @id @default(autoincrement())
+  price       Float    @default(0.00)
+  name        String   @db.VarChar(50)
+  duration    Int      @default(0)
+  description String?  @db.VarChar(255)
+  is_default  Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  active      Boolean  @default(true)
+
+  @@map("delivery_info")
+}
+
+model AddressInfo {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  name        String   @db.VarChar(50)
+  phone       String   @db.VarChar(11)
+  region      Json     @default("[]")
+  address_tag String   @db.VarChar(50)
+  street      String   @db.VarChar(255)
+  is_default  Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("address_info")
+}
+
+model ContactInfo {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  name       String   @db.VarChar(50)
+  phone      String   @db.VarChar(11)
+  tech_name  String   @db.VarChar(50)
+  tech_phone String   @db.VarChar(11)
+  is_default Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("contact_info")
+}
+
+model InvoiceInfo {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
+  entity_type  String   @default("个人")
+  invoice_type String   @default("企业")
+  is_default   Boolean? @default(false)
+  name         String   @db.VarChar(100)
+  email        String   @db.VarChar(100)
+  address      String   @default("")
+  phone        String   @db.VarChar(100)
+  code         String   @default("")
+  tax_no       String?  @db.VarChar(100)
+  bank_name    String?  @db.VarChar(100)
+  bank_no      String?  @db.VarChar(100)
+  bank_address String?  @db.VarChar(100)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("invoice_info")
+}
+
+model OrderInfo {
+  id                Int           @id @default(autoincrement())
+  order_number      String        @unique @db.VarChar(50)
+  userId            Int           @map("user_id")
+  payOrderLogId     Int?          @map("pay_order_log_id")
+  cart_price        Float
+  cart_final_price  Float
+  delivery_info     Json
+  delivery_price    Float
+  address_info      Json?         @default("{}")
+  contact_info      Json?         @default("{}")
+  invoice_info      Json?         @default("{}")
+  invoice_price     Float
+  logistics_info    Json?         @default("{}")
+  logistics_price   Float
+  delivery_type     String        @default("together")
+  receipt_type      String        @default("electronic")
+  description       String        @default("") @db.VarChar(255)
+  total_price       Float
+  total_final_price Float
+  discountAmount    Float         @default(1.00) @map("discount_amount")
+  delivery_date     DateTime?
+  customer_manager  String?       @db.VarChar(50)
+  status            String
+  order_type        String
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+  is_deleted        Boolean       @default(false)
+  admin_changed     Boolean       @default(false)
+  paidAmount        Decimal       @default(0.00) @map("paid_amount") @db.Decimal(10, 2)
+  realPaidAmount    Decimal       @default(0.00) @map("real_paid_amount") @db.Decimal(10, 2)
+  applications      Application[]
+  cart              Cart[]
+  payOrderLog       PayOrderLog?  @relation(fields: [payOrderLogId], references: [id])
+  user              User          @relation(fields: [userId], references: [id])
+  sf_order          SfOrder?
+
+  @@index([userId, order_number, status])
+  @@map("orderinfo")
+}
+
+model Bom {
+  id             Int      @id @default(autoincrement())
+  code           String   @db.VarChar(50)
+  name           String   @db.VarChar(50)
+  color          String?  @db.VarChar(50)
+  sort           Int      @default(0)
+  unit           String   @db.VarChar(50)
+  category       String   @db.VarChar(50)
+  count          Int      @default(0)
+  unit_price     Float    @default(0.00)
+  total_price    Float    @default(0.00)
+  length         Float?
+  diameter       Float?
+  outer_diameter Float?
+  description    String?  @db.VarChar(255)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("bom")
+}
+
+model PayPassword {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique @map("user_id")
+  attempts     Int       @default(0)
+  locked_until DateTime?
+  password     String    @db.VarChar(255)
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  user         User      @relation(fields: [userId], references: [id])
+
+  @@map("pay_password")
+}
+
+model SfOrder {
+  id              Int       @id @default(autoincrement())
+  receiver        Json      @default("{\"name\": \"\", \"phone\": \"\", \"address\": \"\"}")
+  sender          Json      @default("{\"mobile\": \"18750551561\", \"address\": \"福建省泉州市丰泽区北峰街道丰惠西A路79号5楼\", \"company\": \"泉州大宇三维打印科技有限公司\", \"contact\": \"庄云婷\", \"country\": \"CN\", \"contactType\": 1}")
+  template_code   String    @db.VarChar(50)
+  print_count     Int       @default(0)
+  count           Int       @default(1)
+  weight          Float     @default(0.00)
+  orderSource     String    @default("dayu")
+  cargo_details   String
+  payMethod       Int       @default(1)
+  monthlyCard     String?   @db.VarChar(50)
+  is_monthly_card Boolean   @default(false)
+  expressTypeId   Int       @default(2)
+  express_number  String    @unique @db.VarChar(50)
+  order_number    String    @db.VarChar(50)
+  remark          String?   @db.VarChar(255)
+  logistics_list  Json?
+  has_canceled    Boolean   @default(false)
+  orderInfoId     Int       @unique
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  orderInfo       OrderInfo @relation(fields: [orderInfoId], references: [id])
+
+  @@map("sf_order")
+}
+
+model ProductTag {
+  id        Int               @id @default(autoincrement())
+  parentId  Int?
+  name      String
+  path      String
+  sort      Int               @default(0)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  products  ModelProductTag[]
+  parent    ProductTag?       @relation("ProductTagToChildren", fields: [parentId], references: [id])
+  children  ProductTag[]      @relation("ProductTagToChildren")
+
+  @@unique([parentId, name])
+  @@index([parentId])
+  @@index([path])
+}
+
+model ModelProduct {
+  id                         Int               @id @default(autoincrement())
+  title                      String
+  createdAt                  DateTime          @default(now())
+  attributes                 String[]
+  description                String
+  enterprise_extension_price Float
+  enterprise_price           Float
+  files                      String[]
+  images                     String[]
+  is_deleted                 Boolean           @default(false)
+  personal_price             Float
+  videos                     String[]
+  tags                       ModelProductTag[]
+}
+
+/// *
+///  * 多对多
+model ModelProductTag {
+  productId Int
+  tagId     Int
+  product   ModelProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tag       ProductTag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+  @@index([tagId])
+}
+
+model OfficialWebsite {
+  id                      Int      @id @default(autoincrement())
+  email                   String
+  phone                   String
+  wechat_qrcode_url       String
+  mini_program_qrcode_url String
+  homepage_imgs           String[]
+  logo_url                String
+
+  @@map("official_website")
+}
+
+model SecretKey {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model tb_model_product {
+  id                  String                   @id @default(cuid())
+  user_id             Int
+  title               String
+  remark              String                   @default("")
+  price_type          String                   @default("price_free")
+  price_free          Int                      @default(0)
+  price_personal      Int                      @default(0)
+  price_company       Int                      @default(0)
+  price_extend        Int                      @default(0)
+  main_img            String
+  list_img            Json                     @default("[]")
+  list_wireframe      Json                     @default("[]")
+  list_file           Json                     @default("[]")
+  list_video          Json                     @default("[]")
+  list_extend         Json                     @default("[]")
+  count_collect       Int                      @default(0)
+  count_download      Int                      @default(0)
+  count_like          Int                      @default(0)
+  is_check_remark     String                   @default("")
+  is_publish          Boolean                  @default(true)
+  is_deleted          Boolean                  @default(false)
+  is_business         Boolean                  @default(false)
+  is_skeleton         Boolean                  @default(false)
+  is_animation        Boolean                  @default(false)
+  is_print            Boolean                  @default(true)
+  is_no_collapse      Boolean                  @default(true)
+  is_plug_in          Boolean                  @default(false)
+  is_plug_in_remark   String                   @default("")
+  is_chartlet         Boolean                  @default(false)
+  is_texture          Boolean                  @default(false)
+  is_copyright        Boolean                  @default(false)
+  is_copyright_remark String                   @default("")
+  points              Int
+  type_area           String
+  type_wiring         String
+  type_uv             String
+  type_format         String
+  created_at          DateTime                 @default(now())
+  updated_at          DateTime                 @updatedAt
+  type_check          String                   @default("check_publish")
+  type_check_remark   String                   @default("")
+  tb_model_cart       tb_model_cart[]
+  tb_order_infos      tb_model_order_history[]
+  tb_model_order_list tb_model_order_list[]    @relation("ref_order_product")
+  tb_model_kind       tb_model_kind[]          @relation("tb_model_kindTotb_model_product")
+}
+
+model tb_model_cart {
+  id         String           @id @default(cuid())
+  user_id    Int
+  price_type String
+  product_id String
+  is_checked Boolean          @default(true)
+  count      Int              @default(1)
+  updated_at DateTime         @updatedAt
+  created_at DateTime         @default(now())
+  is_deleted Boolean          @default(false)
+  product    tb_model_product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
+
+model tb_model_order_list {
+  id                     String                   @id @default(cuid())
+  order_number           String                   @unique
+  user_id                Int
+  price_sub              Int
+  price_order            Int
+  price_pay              Int
+  pay_time               DateTime
+  is_deleted             Boolean                  @default(false)
+  updated_at             DateTime                 @updatedAt
+  created_at             DateTime                 @default(now())
+  status                 String                   @default("model_pendingPayment")
+  tb_model_order_history tb_model_order_history[]
+  tb_model_product       tb_model_product[]       @relation("ref_order_product")
+}
+
+model tb_model_order_history {
+  id                  Int                 @id @default(autoincrement())
+  is_deleted          Boolean             @default(false)
+  cart_history        Json                @default("{}")
+  product_id          String
+  author_id           Int
+  user_id             Int
+  price_type          String              @default("price_extend")
+  price_pay           Int                 @default(0)
+  status              String              @default("model_pendingPayment")
+  order_code          String
+  order_number        String
+  updated_at          DateTime            @updatedAt
+  created_at          DateTime            @default(now())
+  tb_model_order_list tb_model_order_list @relation(fields: [order_number], references: [order_number], onDelete: Cascade)
+  tb_model_product    tb_model_product    @relation(fields: [product_id], references: [id], onDelete: NoAction)
+}
+
+model tb_model_kind {
+  id               Int                @id @default(autoincrement())
+  name             String
+  is_deleted       Boolean            @default(false)
+  parent_id        Int?
+  parent           tb_model_kind?     @relation("re_tb_model_kind", fields: [parent_id], references: [id], onDelete: Cascade)
+  children         tb_model_kind[]    @relation("re_tb_model_kind")
+  tb_model_product tb_model_product[] @relation("tb_model_kindTotb_model_product")
+}
+
+model tb_model_statis_author {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  author_id     Int
+  count_focus   Int      @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  count_visitor Int      @default(0)
+  date_focus    DateTime @default(now())
+  date_visitor  DateTime @default(now())
+
+  @@unique([user_id, author_id], name: "user_id_author_id")
+}
+
+model tb_model_statis_product {
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  author_id      Int
+  product_id     String
+  count_collect  Int      @default(0)
+  count_download Int      @default(0)
+  count_like     Int      @default(0)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  count_click    Int      @default(0)
+  date_click     DateTime @default(now())
+  date_collect   DateTime @default(now())
+  date_download  DateTime @default(now())
+  date_like      DateTime @default(now())
+  date_sale      DateTime @default(now())
+
+  @@unique([user_id, product_id], name: "user_id_product_id")
+}
+
+model tb_statis_product_record {
+  id             Int      @id @default(autoincrement())
+  user_id        Int?
+  author_id      Int?
+  product_id     String?
+  count_like     Int      @default(0)
+  count_collect  Int      @default(0)
+  count_download Int      @default(0)
+  date_like      DateTime @default(now())
+  date_collect   DateTime @default(now())
+  date_download  DateTime @default(now())
+  kind           String   @default("product")
+  count_focus    Int      @default(0)
+  count_click    Int      @default(0)
+  date_click     DateTime @default(now())
+  created_at     DateTime @default(now())
+}
+
+model tb_statis_product_flow {
+  id                Int      @id @default(autoincrement())
+  user_id           Int?
+  author_id         Int?
+  product_id        String?
+  kind              String   @default("product")
+  count_like        Int      @default(0)
+  count_collect     Int      @default(0)
+  count_download    Int      @default(0)
+  count_click       Int      @default(0)
+  count_author_home Int      @default(0)
+  created_at        DateTime @default(now())
+  date_like         DateTime @default(now())
+  date_collect      DateTime @default(now())
+  date_download     DateTime @default(now())
+  date_click        DateTime @default(now())
+  date_author_home  DateTime @default(now())
+}
+
+model tb_ident_personal {
+  id          Int      @id @default(autoincrement())
+  phone       String
+  type_cert   String   @default("China_Id_Card")
+  name        String
+  code_cert   String
+  img_front   String
+  img_reverse String
+  img_hand    String
+  user_id     Int      @unique
+  sms_code    String   @default("")
+  create_at   DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+}
+
+model tb_demo {
+  id             Int      @id @default(autoincrement())
+  name           String   @default("")
+  remark         String   @default("")
+  is_deleted     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  price_personal Int      @default(0)
+  price_company  Int      @default(0)
+  price_extend   Int      @default(0)
+  list_img       Json     @default("[]")
+}
