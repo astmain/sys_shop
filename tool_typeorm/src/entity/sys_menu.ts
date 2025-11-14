@@ -35,7 +35,6 @@ export class sys_menu extends at_timestamp {
   @Column()
   @ApiProperty({ description: '路径', example: '/user/list' })
   @IsString()
-  @IsNotEmpty()
   path: string
 
 

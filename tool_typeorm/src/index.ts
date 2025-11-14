@@ -25,7 +25,8 @@ export { login, login_type } from './entity/sys_user'
 // 菜单表
 export { sys_menu } from './entity/sys_menu'
 
-
+// 部门表
+export { sys_depart } from './entity/sys_depart'
 
 
 tool_typeorm_init_entity()
