@@ -24,8 +24,8 @@ export { login, login_type } from './entity/sys_user'
 
 
 
-tool_db_init_entity()
-export async function tool_db_init_entity() {
+tool_typeorm_init_entity()
+export async function tool_typeorm_init_entity() {
   try {
     if (!db1_connect.isInitialized) {
       await db1_connect.initialize()

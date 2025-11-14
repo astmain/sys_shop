@@ -7,16 +7,7 @@
   "license": "MIT",
   "scripts": {
     "开发": "==================== 开发 ====================",
-    "make": "     pnpm i  &&  pnpm v1:generate  &&  pnpm v1:push   ",
-    "make1": "     pnpm i  &&   pnpm --filter  tool_db             make     &&   pnpm --filter  tool_orm_Drizzle1   make",
-    "make2": "     pnpm i  &&   pnpm --filter  tool_orm_Drizzle1   make",
-    "dev": "          dotenv -e .env.dev --        nest start --watch",
-    "v1": "==================== v1 ============================================================",
-    "v1:generate": "   dotenv -e .env.dev --        prisma generate     --schema=src/v1/zoom_prisma",
-    "v1:push": "       dotenv -e .env.dev --        prisma db push      --schema=src/v1/zoom_prisma",
-    "v2": "==================== v2 ============================================================",
-    "v2:generate": "   dotenv -e .env.dev --        prisma generate     --schema=src/v2/zoom_prisma",
-    "v2:push": "       dotenv -e .env.dev --        prisma db push      --schema=src/v2/zoom_prisma"
+    "make": "     pnpm i  &&   pnpm --filter  tool_typeorm       "
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -43,10 +34,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.0",
-    "tool_db": "workspace:*",
+    "tool_typeorm": "workspace:*",
     "tool_my": "workspace:*",
-    "tool_orm_Drizzle1": "workspace:*",
-    "typeorm": "^0.3.27",
     "uuid": "^13.0.0",
     "zod": "^4.1.11"
   },

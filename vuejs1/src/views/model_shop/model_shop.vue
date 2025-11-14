@@ -7,7 +7,7 @@
 import { ref } from "vue"
 import { ElMessage } from "element-plus"
 import * as tool_my from "tool_my"
-import type { tb_test1 } from "tool_db"
+import type { tb_test1 } from "tool_typeorm"
 
 async function test1() {
   ElMessage.success("test1")

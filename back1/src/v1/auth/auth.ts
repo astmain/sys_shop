@@ -8,10 +8,10 @@ import { Api_public } from '@src/App_Auth'
 import { JwtService } from '@nestjs/jwt'
 
 // ================================== 数据库 ==================================
-import { db_typeorm } from 'tool_db'
-import { sys_user } from 'tool_db'
+import { db_typeorm } from 'tool_typeorm'
+import { sys_user } from 'tool_typeorm'
 // ================================== dto ==================================
-import { login } from 'tool_db'
+import { login } from 'tool_typeorm'
 
 
 

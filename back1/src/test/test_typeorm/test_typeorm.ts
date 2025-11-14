@@ -12,9 +12,9 @@ import { util_uuid9 } from '@src/plugins/util_uuid9'
 
 // db
 
-import { db_typeorm } from 'tool_db'
-import { Like } from 'tool_db'
-import { tb_user } from 'tool_db'
+import { db_typeorm } from 'tool_typeorm'
+import { Like } from 'tool_typeorm'
+import { tb_user } from 'tool_typeorm'
 import { Api_Post } from '@src/plugins/Api_Post'
 
 export class find_list_user extends PickType(tb_user, ['name']) {}

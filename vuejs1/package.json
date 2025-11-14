@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "tool_my": "workspace:*",
-    "tool_db": "workspace:*",
+    "tool_typeorm": "workspace:*",
     "@unocss/preset-attributify": "^66.2.3",
     "@unocss/preset-uno": "^66.2.3",
     "@vue-flow/background": "^1.3.0",
@@ -44,7 +44,6 @@
     "vue-draggable-plus": "^0.6.0",
     "vue-router": "^4.5.1",
     "mqtt": "^5.14.1",
-    "tool_orm_Drizzle1": "workspace:*",
     "zod": "^4.1.12"
   },
   "devDependencies": {

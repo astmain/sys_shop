@@ -1,5 +1,5 @@
 import { axios_api } from "./plugins/axios_api"
-import type { login_type } from "tool_db"
+import type { login_type } from "tool_typeorm"
 
 // 类型_文件详情
 export interface info_file {

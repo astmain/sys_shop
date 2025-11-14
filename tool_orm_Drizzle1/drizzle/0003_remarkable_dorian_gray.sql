@@ -1,1 +1,0 @@
-ALTER TABLE "tb_test2" ADD CONSTRAINT "tb_test2_age_non_negative" CHECK ("tb_test2"."age" >= 0);

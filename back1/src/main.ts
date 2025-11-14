@@ -12,7 +12,7 @@ import { v1_module } from '@src/v1_module'
 import { v2_module } from '@src/v2_module'
 import { test_module } from '@src/test_module'
 import { App_auth_Module } from '@src/App_Auth'
-import * as tool_db from 'tool_db'
+import * as tool_typeorm from 'tool_typeorm'
 // import { client_mq } from '@src/client_mq'
 
 const list_module = [v1_module, v2_module, test_module, { title: 'common', description: '通用接口', imports: [home_module] },]
@@ -34,7 +34,7 @@ async function main() {
   await Api_doc_group_swagger_knife4j2(app, list_module)
 
   // 初始化数据库连接
-  await tool_db.tool_db_init_entity()
+  await tool_typeorm.tool_typeorm_init_entity()
 
   // 监听端口
   await app.listen(Number(process.env.VITE_port))
