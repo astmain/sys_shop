@@ -66,7 +66,7 @@ export class sys_user extends at_timestamp {
 
   @ManyToMany(() => sys_depart, (o) => o.sys_user)
   @JoinTable({
-    name: 'sys_user_depart', // 中间表名（可选）
+    name: 'ref_user_depart', // 中间表名（可选）
     joinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
     inverseJoinColumn: { name: 'depart_id', referencedColumnName: 'id' },
   })
