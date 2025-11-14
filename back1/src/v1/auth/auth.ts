@@ -145,6 +145,41 @@ export class auth {
 
 
 
+
+
+
+            // ================================== 部门-菜单 ==================================
+            const role_1001_menu_ids = [
+                '/home:查看',
+                '/home:删除',
+                '/home:新增',
+                '/home:修改',
+            ]
+            const role_1001_menus = await runner.manager.find(sys_menu, {
+                where: role_1001_menu_ids.map((menu_id) => ({ id: menu_id })),
+            })
+            console.log(`111---role_1001_menus:`, role_1001_menus)
+            await runner.manager
+                .createQueryBuilder()
+                .relation(sys_depart, 'sys_menu')
+                .of('role_1001')
+                .add(role_1001_menu_ids)
+
+
+
+
+
+
+            // ================================== 部门-菜单 ==================================
+
+
+            "role_1001"
+            // 让"role_1001" 部门     关联:首页_查看,首页_删除,首页_新增,首页_修改
+
+
+
+
+
             await runner.commitTransaction()
             return { code: 200, msg: '成功:初始化数据', result: {} }
         } catch (error) {
