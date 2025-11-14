@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "开发": "==================== 开发 ====================",
-    "make": "     pnpm i  &&   pnpm --filter  tool_typeorm       ",
+    "make": "     pnpm i  &&   pnpm --filter  tool_typeorm      make ",
     "dev": "          dotenv -e .env.dev --        nest start --watch"
   },
   "dependencies": {

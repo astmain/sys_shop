@@ -15,11 +15,15 @@ export { tb_user } from './entity/tb_user'
 
 
 
-// 表
+// 用户表
 export { sys_user } from './entity/sys_user'
 export { login, login_type } from './entity/sys_user'
 
 
+
+
+// 菜单表
+export { sys_menu } from './entity/sys_menu'
 
 
 

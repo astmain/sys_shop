@@ -27,6 +27,12 @@ export class sys_menu extends at_timestamp {
 
 
   @Column()
+  @ApiProperty({ description: '菜单名称', example: '首页' })
+  @IsString()
+  @IsNotEmpty()
+  name: string
+
+  @Column()
   @ApiProperty({ description: '路径', example: '/user/list' })
   @IsString()
   @IsNotEmpty()

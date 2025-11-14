@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt'
 // ================================== 数据库 ==================================
 import { db_typeorm } from 'tool_typeorm'
 import { sys_user } from 'tool_typeorm'
+import { sys_menu } from 'tool_typeorm'
 // ================================== dto ==================================
 import { login } from 'tool_typeorm'
 
@@ -38,8 +39,34 @@ export class auth {
     async init_data_sys_menu_depart_user(@Body() body: login, @Req() _req: any) {
         await db_typeorm.clear(sys_user)
         try {
+            // 用户
             await db_typeorm.save(new sys_user({ user_id: "1", name: '许鹏', phone: '15160315110', password: '123456' }))
             await db_typeorm.save(new sys_user({ user_id: "2", name: '二狗', phone: '15160315112', password: '123456' }))
+
+
+
+            db_typeorm.insert(sys_menu, [
+                // 一级菜单
+                { menu_id: 'menu_1', name: '首页', path: '/home' },
+                { menu_id: 'menu_2', name: '商城管理', path: '/shop' },
+                { menu_id: 'menu_3', name: '用户管理', path: '/system/user' },
+                { menu_id: 'menu_4', name: '菜单管理', path: '/system/menu' },
+                { menu_id: 'menu_5', name: '字典管理', path: '/dict' },
+                // 商城管理-子菜单
+                { menu_id: 'sub_2001', name: '订单管理', path: '/shop/order', parent_id: 'menu_2' },
+                { menu_id: 'sub_2002', name: '商品管理', path: '/shop/product', parent_id: 'menu_2' },
+                { menu_id: 'sub_2003', name: '财务管理', path: '/shop/finance', parent_id: 'menu_2' },
+              ])
+
+
+
+    // const     aaa=   
+
+
+
+
+
+
             return { code: 200, msg: '成功:初始化数据', result: {} }
         } catch (error) {
             return { code: 400, msg: '失败:初始化数据', result: { error } }
