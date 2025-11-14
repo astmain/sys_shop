@@ -1,13 +1,13 @@
 import 'reflect-metadata'
 import { db1, db1_connect } from './db1'
-import { tb_test1 } from './entity/tb_test1'
+
 import { tb_user } from './entity/tb_user'
 
 
 export { Like } from 'typeorm'
 
 export const db_typeorm = db1
-export { tb_test1 } from './entity/tb_test1'
+
 export { tb_user } from './entity/tb_user'
 
 
