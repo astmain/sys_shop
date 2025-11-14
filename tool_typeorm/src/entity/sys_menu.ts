@@ -23,7 +23,7 @@ export class sys_menu extends at_timestamp {
   @PrimaryColumn({ type: 'varchar', comment: '主键ID' })
   @ApiProperty({ description: '主键ID', example: 'uuid' })
   @IsString()
-  menu_id: string = uuidv4()
+  id: string = uuidv4()
 
 
   @Column()

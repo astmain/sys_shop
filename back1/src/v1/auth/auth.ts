@@ -6,6 +6,7 @@ import { Api_Post } from '@src/plugins/Api_Post'
 import { Api_group } from '@src/plugins/Api_group'
 import { Api_public } from '@src/App_Auth'
 import { JwtService } from '@nestjs/jwt'
+import { v4 as uuidv4 } from 'uuid'
 
 // ================================== 数据库 ==================================
 import { db_typeorm } from 'tool_typeorm'
@@ -56,8 +57,8 @@ export class auth {
 
             // 3. 插入菜单
             await runner.manager.insert(sys_menu, [
-                { menu_id: 'menu_1', name: '首页', path: '/home' },
-                { menu_id: 'menu_2', name: '商城管理', path: '/shop' },
+                { id: 'menu_1', name: '首页', path: '/home' },
+                { id: 'menu_2', name: '商城管理', path: '/shop' },
                 // ...
             ])
 

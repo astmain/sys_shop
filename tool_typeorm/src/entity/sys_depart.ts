@@ -33,7 +33,7 @@ export class sys_depart extends at_timestamp {
   @IsNotEmpty()
   name: string
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty({ description: '路径', example: '/user/list' })
   @IsString()
   @IsNotEmpty()
