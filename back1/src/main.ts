@@ -34,7 +34,7 @@ async function main() {
   await Api_doc_group_swagger_knife4j2(app, list_module)
 
   // 初始化数据库连接
-  await tool_typeorm.tool_typeorm_init_entity()
+  await tool_typeorm.tool_db_init_entity()
 
   // 监听端口
   await app.listen(Number(process.env.VITE_port))

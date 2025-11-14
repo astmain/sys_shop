@@ -10,7 +10,7 @@ export const db_typeorm = db1
 export { tb_test1 } from './entity/tb_test1'
 export { tb_user } from './entity/tb_user'
 
-export { tb_test1_zod, tb_test1_zod_i } from './tb_type/tb_test1_zod'
+
 
 
 
