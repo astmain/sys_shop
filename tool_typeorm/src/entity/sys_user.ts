@@ -63,3 +63,21 @@ export class sys_user extends at_timestamp {
   @IsIn(['男', '女', '未知'], { message: '性别格式不正确' })
   gender: '男' | '女' | '未知' = '未知'
 }
+
+
+
+// ================================== dto ==================================
+export class login extends PickType(sys_user, ['phone', 'password']) { }
+
+
+
+
+export type login_type = InstanceType<typeof login>;
+
+
+
+const aaa: login_type = {
+  phone: '123',
+  password: '123',
+}
+

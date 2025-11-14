@@ -1,4 +1,5 @@
 import { axios_api } from "./plugins/axios_api"
+import type { login_type } from "tool_db"
 
 // 类型_文件详情
 export interface info_file {
@@ -39,7 +40,7 @@ export const dict_info = []
 
 export let api_v1 = {
   auth: {
-    login: (form: { phone: string; password: string }) => axios_api.post("/v1/auth/login", form),
+    login: (form: login_type) => axios_api.post("/v1/auth/login", form),
   },
 
   dict: {
