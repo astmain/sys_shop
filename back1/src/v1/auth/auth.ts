@@ -56,11 +56,11 @@ export class auth {
                 { menu_id: 'sub_2001', name: '订单管理', path: '/shop/order', parent_id: 'menu_2' },
                 { menu_id: 'sub_2002', name: '商品管理', path: '/shop/product', parent_id: 'menu_2' },
                 { menu_id: 'sub_2003', name: '财务管理', path: '/shop/finance', parent_id: 'menu_2' },
-              ])
+            ])
 
 
 
-    // const     aaa=   
+            // const     aaa=   
 
 
 

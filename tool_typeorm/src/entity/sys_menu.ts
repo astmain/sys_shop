@@ -39,21 +39,21 @@ export class sys_menu extends at_timestamp {
   path: string
 
 
-  @Column()
+  @Column({ default: "menu" })
   @ApiProperty({ description: '类型', example: 'menu' })
   @IsString()
   @IsNotEmpty()
   @IsIn(['menu', 'button'])
-  type: string
+  type: string = 'menu'
 
 
-  @Column()
+  @Column({ default: "" })
   @ApiProperty({ description: '备注', example: "" })
   @IsString()
   remark: string = ""
 
 
-  @Column()
+  @Column({ default: true })
   @ApiProperty({ description: '状态', example: "1" })
   @IsBoolean()
   status: boolean = true
