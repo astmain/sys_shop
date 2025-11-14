@@ -57,9 +57,17 @@ export class auth {
 
             // 3. 插入菜单
             await runner.manager.insert(sys_menu, [
+                // 一级菜单
                 { id: 'menu_1', name: '首页', path: '/home' },
                 { id: 'menu_2', name: '商城管理', path: '/shop' },
-                // ...
+                { id: 'menu_3', name: '用户管理', path: '/system/user' },
+                { id: 'menu_4', name: '菜单管理', path: '/system/menu' },
+                { id: 'menu_5', name: '字典管理', path: '/dict' },
+                // 商城管理-子菜单
+                { id: 'sub_2001', name: '订单管理', path: '/shop/order', parent_id: 'menu_2' },
+                { id: 'sub_2002', name: '商品管理', path: '/shop/product', parent_id: 'menu_2' },
+                { id: 'sub_2003', name: '财务管理', path: '/shop/finance', parent_id: 'menu_2' },
+
             ])
 
 
