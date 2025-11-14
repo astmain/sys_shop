@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeUpdate, AfterLoad } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, BeforeUpdate, AfterLoad } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
 import { Exclude, Expose } from 'class-transformer'
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiProperty, PickType } from '@nestjs/swagger'
@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiBody, ApiParam } from '@nestjs/swagger'
 import { IsInt, IsNotEmpty, IsNotEmptyObject, IsString, IsIn, IsBoolean, IsMobilePhone, Min, ValidateNested } from 'class-validator'
 
 import { at_timestamp } from './common'
+import { sys_depart } from './sys_depart'
 
 @Entity('sys_user')
 export class sys_user extends at_timestamp {
@@ -62,6 +63,14 @@ export class sys_user extends at_timestamp {
   @IsNotEmpty()
   @IsIn(['男', '女', '未知'], { message: '性别格式不正确' })
   gender: '男' | '女' | '未知' = '未知'
+
+  @ManyToMany(() => sys_depart, (o) => o.sys_user)
+  @JoinTable({
+    name: 'sys_user_depart', // 中间表名（可选）
+    joinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
+    inverseJoinColumn: { name: 'depart_id', referencedColumnName: 'id' },
+  })
+  sys_depart: sys_depart[];
 }
 
 
