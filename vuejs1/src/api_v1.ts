@@ -66,7 +66,7 @@ export let api_v1 = {
   },
 
   user: {
-    find_one_user: (form: { id: string }) => axios_api.post("/v1/user/find_one_user", form),
+    find_one_user: (form: { user_id: string }) => axios_api.post("/v1/user/find_one_user", form),
     find_tree_depart: () => axios_api.post("/v1/user/find_tree_depart"),
     find_list_user: (form: { depart_id: string }) => axios_api.post("/v1/user/find_list_user", form),
     save_user: (form: { id: string; name: string; phone: string; gender: string; remark: string; user_depart_role_ids: string[] }) => axios_api.post("/v1/user/save_user", form),

@@ -19,7 +19,7 @@ import { remove_ids_user } from 'tool_typeorm'
 export class user {
   @Api_Get('查询用户列表')
   async find_list_user(@Query() body: any, @Req() _req: any) {
-    return { code: 200, msg: '成功:v1', result: {} }
+    return { code: 200, msg: '成功', result: {} }
   }
 
 
@@ -28,7 +28,24 @@ export class user {
   async remove_ids_user(@Body() body: remove_ids_user, @Req() _req: any) {
     console.log(`remove_ids_user---body:`, body)
     await db_typeorm.delete(sys_user, { user_id: In(body.ids) })
-    return { code: 200, msg: '成功:v1', result: {} }
+    return { code: 200, msg: '成功', result: {} }
+  }
+
+
+  @Api_Post('保存用户')
+  async save_user(@Body() body: sys_user, @Req() _req: any) {
+    console.log(`save_user---body:`, body)
+    return { code: 200, msg: '成功', result: {} }
+  }
+
+
+
+  @Api_Post('查询单个用户')
+  async find_one_user(@Body() body: { user_id: string }, @Req() _req: any) {
+    console.log(`find_one_user---body:`, body)
+    const user = await db_typeorm.findOne(sys_user, { where: { user_id: body.user_id } })
+    if (!user) return { code: 400, msg: '失败', result: {} }
+    return { code: 200, msg: '成功', result: { user } }
   }
 
 

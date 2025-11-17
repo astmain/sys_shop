@@ -17,13 +17,14 @@
         <el-table-column prop="gender" label="性别" width="100" />
         <el-table-column label="操作" width="200">
           <template #default="scope">
-            <!-- <el-button type="primary" link @click="user_drawer_ref.open(scope.row.id)">修改</el-button> -->
+            <el-button type="primary" link @click="user_drawer_ref.open(scope.row.user_id)">修改</el-button>
             <el-button link @click="remove_ids_user([scope.row.user_id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </nav>
   </nav>
+  <user_drawer ref="user_drawer_ref" />
 
 
 
@@ -34,6 +35,7 @@
 import { onMounted, ref } from "vue"
 import { ElMessage } from "element-plus"
 import { api_v1 } from "@/api_v1"
+import user_drawer from "./user_drawer.vue"
 const ref_tree_depart = ref()
 const curr_depart_node = ref()
 const list_user = ref([] as any[])
@@ -41,6 +43,8 @@ const tree_depart = ref({
   data: [] as any[],
   currentNodeKey: undefined,
 })
+
+const user_drawer_ref = ref()
 
 async function find_depart_by_user_id() {
   const res: any = await api_v1.auth.find_depart_by_user_id()
