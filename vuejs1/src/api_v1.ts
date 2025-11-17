@@ -43,6 +43,7 @@ export let api_v1 = {
     login: (form: login_type) => axios_api.post("/v1/auth/login", form),
     find_menu_tree_by_user_id: () => axios_api.post("/v1/auth/find_menu_tree_by_user_id"),
     find_depart_by_user_id: () => axios_api.post("/v1/auth/find_depart_by_user_id"),
+    find_list_user: (form: { depart_id: string }) => axios_api.post("/v1/auth/find_list_user", form),
   },
 
   dict: {

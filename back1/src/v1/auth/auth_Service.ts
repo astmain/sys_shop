@@ -6,8 +6,10 @@ import { sys_user } from 'tool_typeorm'
 import { sys_menu } from 'tool_typeorm'
 import { sys_depart } from 'tool_typeorm'
 
-import { db_find_ids_self_and_parent } from '@src/plugins/db_find_ids_self_and_parent'
 import { db_build_tree } from '@src/plugins/db_build_tree'
+
+import { db_find_ids_self_and_parent } from '@src/plugins/db_find_ids_self_and_parent'
+import { db_find_ids_self_and_children } from '@src/plugins/db_find_ids_self_and_children'
 
 
 @Injectable()
@@ -50,6 +52,15 @@ export class auth_Service {
         const menu_tree = db_build_tree(menu_list)
         // console.log("menu_tree", JSON.parse(JSON.stringify(menu_tree)))
         return { menu_tree, button_ids }
+    }
+
+
+
+    async find_list_user(depart_id: string) {
+        const user_ids = await db_find_ids_self_and_children({ db: db_typeorm, table_name: "sys_depart", id: depart_id })
+        console.log(`111---user_ids:`, user_ids)
+
+        return {}
     }
 
 }

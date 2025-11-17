@@ -17,6 +17,7 @@ import { sys_menu } from 'tool_typeorm'
 import { sys_depart } from 'tool_typeorm'
 // ================================== dto ==================================
 import { login } from 'tool_typeorm'
+import { find_list_user } from './dto/find_list_user'
 
 // ================================== 服务 ==================================
 import { auth_Service } from './auth_Service'
@@ -50,6 +51,15 @@ export class auth {
         const { depart_tree, depart_ids, depart_list } = await this.auth_service.find_depart_by_user_id(req.user_id)
         return { code: 200, msg: '成功', result: { depart_tree } }
     }
+
+
+    @Api_Post('查询-用户')
+    async find_list_user(@Body() body: find_list_user, @Req() req: any) {
+        await this.auth_service.find_list_user(body.depart_id)
+        return { code: 200, msg: '成功', result: {} }
+    }
+
+
 
     @Api_public()
     @Api_Post('初始化数据-菜单-部门-用户')
