@@ -1,5 +1,5 @@
 <template>
-  <ElDrawer ref="drawer" v-model="drawer_show" :title="drawer_title" size="500px" destroy-on-close>
+  <ElDrawer ref="drawer" v-model="show" :title="title" size="500px" destroy-on-close>
     <el-form label-width="60px" label-position="left">
       <el-form-item label="头像">
         <img :src="user.avatar" alt="" class="w-20 h-20" />
@@ -24,7 +24,7 @@
 
       <el-form-item label="部门树">
         <el-tree ref="ElTreeRef" :data="depart_tree" node-key="id" :props="{ label: 'name' }" :default-expand-all="true"
-          show-checkbox :default-checked-keys="user_depart_role_ids" />
+          show-checkbox :default-checked-keys="role_ids" />
       </el-form-item>
     </el-form>
 
@@ -39,41 +39,38 @@ import { ref } from "vue"
 import { BUS } from "@/BUS"
 import { api_v1 } from "@/api_v1"
 import { ElMessage } from "element-plus"
-let drawer_show = ref(false)
-let drawer_title = ref("")
+let show = ref(false)
+let title = ref("")
 let user = ref({} as any)
 let depart_tree = ref()
-let user_depart_role_ids = ref([])
+let role_ids = ref([])
 let ElTreeRef = ref()
 
 // 打开交互窗口
 async function open(user_id: string) {
-  user_depart_role_ids.value = [] //清空选中的树节点
+  show.value = true
+  role_ids.value = [] //清空选中的树节点
   let res: any = await api_v1.user.find_one_user({ user_id })
   if (res.code != 200) return ElMessage.error(res.msg) //前置判断
   console.log("res", res)
-  // user_depart_role_ids.value = res.result.user_depart_role_ids
+  role_ids.value = res.result.role_ids
   user.value = res.result.user
   depart_tree.value = res.result.depart_tree
-  drawer_show.value = true
+
 }
 
 // 提交保存
 async function submit() {
-  // console.log("ElTreeRef.value", ElTreeRef.value.getCheckedNodes())
-  // let ids = ElTreeRef.value
-  //   .getCheckedNodes()
-  //   .filter((o: any) => !o.is_depart)
-  //   .map((o: any) => o.id)
-
-  // // console.log("ids", ids)
+  console.log("ElTreeRef.value", JSON.parse(JSON.stringify(ElTreeRef.value.getCheckedNodes())))
+  let ids = ElTreeRef.value.getCheckedNodes().filter((o: any) => o.type === 'role').map((o: any) => o.id)
+  console.log("ids", ids)
   // // 表单数据
-  // let form = { id: user.value.id, name: user.value.name, phone: user.value.phone, gender: user.value.gender, remark: user.value.remark, user_depart_role_ids: ids }
+  let form = { user_id: user.value.user_id, name: user.value.name, phone: user.value.phone, gender: user.value.gender, remark: user.value.remark, role_ids: ids }
 
-  // let res: any = await api.user.save_user(form)
+  let res: any = await api_v1.user.save_user(form)
   // if (res.code != 200) return ElMessage.error(res.msg)
   // ElMessage.success("保存成功")
-  // drawer_show.value = false
+  // show.value = false
   // BUS.func.tree_left_click() //调用全局BUS函数
 }
 

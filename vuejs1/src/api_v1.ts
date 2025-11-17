@@ -69,7 +69,7 @@ export let api_v1 = {
     find_one_user: (form: { user_id: string }) => axios_api.post("/v1/user/find_one_user", form),
     find_tree_depart: () => axios_api.post("/v1/user/find_tree_depart"),
     find_list_user: (form: { depart_id: string }) => axios_api.post("/v1/user/find_list_user", form),
-    save_user: (form: { id: string; name: string; phone: string; gender: string; remark: string; user_depart_role_ids: string[] }) => axios_api.post("/v1/user/save_user", form),
+    save_user: (form: { user_id: string; name: string; phone: string; gender: string; remark: string; role_ids: string[] }) => axios_api.post("/v1/user/save_user", form),
     remove_ids_user: (form: remove_ids_user_type) => axios_api.post("/v1/user/remove_ids_user", form),
     update_user_info: (form: { id: string; name: string; gender: string; avatar: string }) => axios_api.post("/v1/user/update_user_info", form),
   },
