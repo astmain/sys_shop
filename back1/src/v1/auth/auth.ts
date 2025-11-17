@@ -47,7 +47,7 @@ export class auth {
             [
                 // 一级菜单
                 { id: 'menu_1', name: '首页', path: '/home' },
-                { id: 'menu_2', name: '商城管理', path: '/shop' },
+                { id: 'menu_2', name: '商城管理1', path: '/shop' },
                 { id: 'menu_3', name: '用户管理', path: '/system/user' },
                 { id: 'menu_4', name: '菜单管理', path: '/system/menu' },
                 { id: 'menu_5', name: '字典管理', path: '/dict' },

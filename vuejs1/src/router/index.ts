@@ -6,12 +6,13 @@ export const view_admin = [
 
   // 首页
   { name: "首页", path: "/home", component: () => import("../views/home/home.vue") },
+  { name: "用户管理", path: "/user", component: () => import("../views/user/user.vue") },
 
 ]
 
 // ==================== 商城界面 ====================
 export const view_shop = [
- 
+
   { name: "markdown", path: "/markdown", component: () => import("@/layout/markdown/markdown.vue") },
   { name: "模型商城", path: "/model_shop", component: () => import("../views/model_shop/model_shop.vue") },
   { name: "打印商城", path: "/print_shop", component: () => import("../views/print_shop/print_shop.vue") },
