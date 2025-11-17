@@ -4,7 +4,7 @@ import { db1, db1_connect } from './db1'
 import { tb_user } from './entity/tb_user'
 
 
-export { Like } from 'typeorm'
+export { Like, In } from 'typeorm'
 
 export const db_typeorm = db1
 

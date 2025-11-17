@@ -59,9 +59,12 @@ async function handle_login_api() {
       // localStorage.setItem("token", res.result.token)
       // console.log("localStorage.setItem(token, res.result.token)", localStorage.getItem("token"))
       BUS.token = res.result.token
+      const res2: any = await api_v1.auth.find_menu_tree_by_user_id()
+      console.log("api_v1.auth.find_menu_tree_by_user_id---res2", res2)
       // const res2: any = await api_v1.user.find_one_user({ id: res.result.id })
       // console.log("api_v1.user.find_one_user---res2", res2)
-      // BUS.role_menu_tree = []
+      BUS.role_menu_tree = res2.result.menu_tree
+
       // BUS.user = res2.result.user
       // 跳转到首页
       router.push("/home")

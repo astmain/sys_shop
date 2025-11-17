@@ -7,18 +7,25 @@ import { Api_group } from '@src/plugins/Api_group'
 import { Api_public } from '@src/App_Auth'
 import { JwtService } from '@nestjs/jwt'
 import { v4 as uuidv4 } from 'uuid'
+import { db_build_tree } from '@src/plugins/db_build_tree'
+import { db_find_ids_self_and_parent } from '@src/plugins/db_find_ids_self_and_parent'
 
 // ================================== 数据库 ==================================
-import { db_typeorm } from 'tool_typeorm'
+import { db_typeorm, In } from 'tool_typeorm'
 import { sys_user } from 'tool_typeorm'
 import { sys_menu } from 'tool_typeorm'
 import { sys_depart } from 'tool_typeorm'
 // ================================== dto ==================================
 import { login } from 'tool_typeorm'
 
-@Api_public()
+// ================================== 服务 ==================================
+import { auth_Service } from './auth_Service'
+
+
 @Api_group('v1', '认证')
 export class auth {
+    constructor(private readonly auth_service: auth_Service) { }
+    @Api_public()
     @Api_Post('登陆')
     async login(@Body() body: login, @Req() _req: any) {
         console.log(`login---body:`, body)
@@ -30,6 +37,14 @@ export class auth {
         return { code: 200, msg: '成功', result: { token } }
     }
 
+
+    @Api_Post('查询-菜单树-根据-用户ID')
+    async find_menu_tree_by_user_id(@Req() req: any) {
+        const { menu_tree, button_ids } = await this.auth_service.find_menu_tree_by_user_id(req.user_id)
+        return { code: 200, msg: '成功', result: { menu_tree, button_ids } }
+    }
+
+    @Api_public()
     @Api_Post('初始化数据-菜单-部门-用户')
     async init_data_sys_menu_depart_user() {
         // 先删除中间表（多对多关系表）
@@ -45,8 +60,8 @@ export class auth {
             // 一级菜单
             { id: 'menu_1', name: '首页', path: '/home' },
             { id: 'menu_2', name: '商城管理1', path: '/shop' },
-            { id: 'menu_3', name: '用户管理', path: '/system/user' },
-            { id: 'menu_4', name: '菜单管理', path: '/system/menu' },
+            { id: 'menu_3', name: '用户管理', path: '/user' },
+            { id: 'menu_4', name: '菜单管理', path: '/menu' },
             { id: 'menu_5', name: '字典管理', path: '/dict' },
             // 商城管理-子菜单
             { id: 'sub_2001', name: '订单管理', path: '/shop/order', parent_id: 'menu_2' },
@@ -186,6 +201,7 @@ export class auth {
 
 @Module({
     controllers: [auth],
-    providers: [],
+    providers: [auth_Service],
 })
 export class auth_module { }
+
