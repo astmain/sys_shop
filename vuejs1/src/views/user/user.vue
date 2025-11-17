@@ -25,7 +25,7 @@
     </nav>
   </nav>
   <user_drawer ref="user_drawer_ref" />
-
+  <Menu1 ref="Menu1Ref" :menu_list="menu_curr_list" />
 
 
 
@@ -36,7 +36,10 @@ import { onMounted, ref } from "vue"
 import { ElMessage } from "element-plus"
 import { api_v1 } from "@/api_v1"
 import user_drawer from "./user_drawer.vue"
+import { plugin_confirm } from "@/plugins/plugin_confirm"
+import Menu1 from "./Menu1.vue"
 const ref_tree_depart = ref()
+const Menu1Ref = ref()
 const curr_depart_node = ref()
 const list_user = ref([] as any[])
 const tree_depart = ref({
@@ -45,6 +48,44 @@ const tree_depart = ref({
 })
 
 const user_drawer_ref = ref()
+const ref_com_dialog_depart_create = ref()
+const ref_com_dialog_depart_update = ref()
+
+
+// 右键菜单当前列表
+const menu_curr_list = ref([] as any[])
+// 右键菜单部门角色列表
+const menu_depart_role_list = ref([
+  {
+    label: "新增部门",
+    click: async (item: any) => {
+      ref_com_dialog_depart_create.value.title = item.label
+      ref_com_dialog_depart_create.value.tree_node_curr = curr_depart_node.value
+      ref_com_dialog_depart_create.value.open()
+    },
+  },
+
+  {
+    label: "修改部门",
+    click: async (item: any) => {
+      ref_com_dialog_depart_update.value.title = item.label
+      ref_com_dialog_depart_update.value.tree_node_curr = curr_depart_node.value
+      ref_com_dialog_depart_update.value.open()
+    },
+  },
+  {
+    label: "删除",
+    click: async (item: any) => {
+      // if (!(await plugin_confirm())) return
+      // let res: any = await api.depart.delete_depart_role_ids({ ids: [curr_depart_node.value.id] })
+      // if (res.code != 200) return ElMessage.error(res.msg) //前置判断
+      // ElMessage.success(res.msg)
+      // await find_tree_depart()
+    },
+  },
+])
+
+
 
 async function find_depart_by_user_id() {
   const res: any = await api_v1.auth.find_depart_by_user_id()
@@ -63,7 +104,7 @@ async function remove_ids_user(ids: string[]) {
     ElMessage.error(res.msg)
   }
 
-  
+
 }
 
 
@@ -78,9 +119,21 @@ async function tree_left_click(data: any) {
 
 }
 
-
-function tree_ritht_click(event: Event, data: any, node: any, nodeInstance: any) {
-
+// ✅右键点击事件
+function tree_ritht_click(event: Event, item: any, node: any, nodeInstance: any) {
+  event.preventDefault() 
+  Menu1Ref.value.show_menu(event)
+  curr_depart_node.value = item
+  if (item.type === "company") {
+    menu_curr_list.value = menu_depart_role_list.value.filter((item: any) => item.label == "新增部门")
+  } else if (item.type === "depart") {
+    menu_curr_list.value = menu_depart_role_list.value.filter((item: any) => item.label == "删除" || item.label == "修改部门")
+  } else if (item.type === "role") {
+    menu_curr_list.value = menu_depart_role_list.value.filter((item: any) => item.label == "删除")
+  } else {
+    ElMessage.error("没有找到类型")
+    console.log("没有找到类型", item)
+  }
 }
 
 
