@@ -57,10 +57,12 @@ export class auth_Service {
 
 
     async find_list_user(depart_id: string) {
-        const user_ids = await db_find_ids_self_and_children({ db: db_typeorm, table_name: "sys_depart", id: depart_id })
-        console.log(`111---user_ids:`, user_ids)
-
-        return {}
+        const depart_role_ids = await db_find_ids_self_and_children({ db: db_typeorm, table_name: "sys_depart", id: depart_id })
+        console.log(`find_list_user---depart_role_ids:`, depart_role_ids)//结果 [ 'role_1001', 'role_1002', 'depart_1001' ]
+        const ref_user = await db_typeorm.query(`SELECT DISTINCT user_id FROM ref_user_depart WHERE depart_id = ANY($1)`, [depart_role_ids])
+        const list_user = await db_typeorm.find(sys_user, { where: { user_id: In(ref_user.map((item: any) => item.user_id)) } })
+        // console.log(`find_list_user---list_user:`, list_user)
+        return { list_user }
     }
 
 }

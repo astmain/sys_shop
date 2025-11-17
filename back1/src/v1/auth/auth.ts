@@ -55,8 +55,8 @@ export class auth {
 
     @Api_Post('查询-用户')
     async find_list_user(@Body() body: find_list_user, @Req() req: any) {
-        await this.auth_service.find_list_user(body.depart_id)
-        return { code: 200, msg: '成功', result: {} }
+        const { list_user } = await this.auth_service.find_list_user(body.depart_id)
+        return { code: 200, msg: '成功', result: { list_user } }
     }
 
 
@@ -151,11 +151,11 @@ export class auth {
 
         // ================================== 部门-用户 ==================================
         await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_1001').add(["1", "2"])
-        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_1002').add(["1", "2"])
-        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_2001').add(["1", "2"])
-        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_2002').add(["1", "2"])
-        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_3001').add(["1", "2"])
-        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_3002').add(["1", "2"])
+        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_1002').add(["1"])
+        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_2001').add(["1"])
+        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_2002').add(["1"])
+        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_3001').add(["1"])
+        await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_user').of('role_3002').add(["1"])
 
 
 

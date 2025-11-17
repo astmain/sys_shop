@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Exclude, Expose } from 'class-transformer'
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiProperty, PickType } from '@nestjs/swagger'
 import { ApiBearerAuth, ApiBody, ApiParam } from '@nestjs/swagger'
-import { IsInt, IsNotEmpty, IsNotEmptyObject, IsString, IsIn, IsBoolean, IsMobilePhone, Min, ValidateNested } from 'class-validator'
+import { IsInt, IsNotEmpty, IsNotEmptyObject, IsString, IsIn, IsBoolean, IsMobilePhone, Min, ValidateNested, IsArray } from 'class-validator'
 
 import { at_timestamp } from './common'
 import { sys_depart } from './sys_depart'
@@ -77,16 +77,16 @@ export class sys_user extends at_timestamp {
 
 // ================================== dto ==================================
 export class login extends PickType(sys_user, ['phone', 'password']) { }
-
-
-
-
-export type login_type = InstanceType<typeof login>;
-
-
-
-const aaa: login_type = {
-  phone: '123',
-  password: '123',
+export class remove_ids_user {
+  @ApiProperty({ description: 'ids', example: ['1', '2'], isArray: true })
+  @IsArray()
+  @IsString({ each: true })
+  ids: string[]
 }
+
+
+// ================================== type ==================================
+export type login_type = InstanceType<typeof login>;
+export type remove_ids_user_type = InstanceType<typeof remove_ids_user>;
+
 

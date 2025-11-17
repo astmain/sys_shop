@@ -18,6 +18,7 @@ export { tb_user } from './entity/tb_user'
 // 用户表
 export { sys_user } from './entity/sys_user'
 export { login, login_type } from './entity/sys_user'
+export { remove_ids_user, remove_ids_user_type } from './entity/sys_user'
 
 
 

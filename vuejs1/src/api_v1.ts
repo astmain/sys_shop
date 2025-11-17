@@ -1,5 +1,5 @@
 import { axios_api } from "./plugins/axios_api"
-import type { login_type } from "tool_typeorm"
+import type { login_type, remove_ids_user_type } from "tool_typeorm"
 
 // 类型_文件详情
 export interface info_file {
@@ -70,7 +70,7 @@ export let api_v1 = {
     find_tree_depart: () => axios_api.post("/v1/user/find_tree_depart"),
     find_list_user: (form: { depart_id: string }) => axios_api.post("/v1/user/find_list_user", form),
     save_user: (form: { id: string; name: string; phone: string; gender: string; remark: string; user_depart_role_ids: string[] }) => axios_api.post("/v1/user/save_user", form),
-    remove_ids_user: (form: { ids: string[] }) => axios_api.post("/v1/user/remove_ids_user", form),
+    remove_ids_user: (form: remove_ids_user_type) => axios_api.post("/v1/user/remove_ids_user", form),
     update_user_info: (form: { id: string; name: string; gender: string; avatar: string }) => axios_api.post("/v1/user/update_user_info", form),
   },
 
