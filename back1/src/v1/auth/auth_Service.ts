@@ -12,6 +12,7 @@ import { db_build_tree } from '@src/plugins/db_build_tree'
 
 @Injectable()
 export class auth_Service {
+    // 查询-角色-根据-用户ID
     async find_role_by_user_id(user_id: string) {
         const role_list = await db_typeorm.createQueryBuilder()
             .relation(sys_user, 'sys_depart')
@@ -20,14 +21,18 @@ export class auth_Service {
         return role_list
     }
 
-    
-    async find_depart_ids_by_role_id(role_id: string) {
-        const role_list = await this.find_role_by_user_id(role_id)
+
+    // 查询-部门-根据-角色ID
+    async find_depart_by_user_id(user_id: string) {
+        const role_list = await this.find_role_by_user_id(user_id)
         const depart_ids = await db_find_ids_self_and_parent({ db: db_typeorm, table_name: "sys_depart", ids: role_list.map((item) => item.id) })
-        return depart_ids
+        const depart_list = await db_typeorm.find(sys_depart, { where: { id: In(depart_ids) } })
+        const depart_tree = db_build_tree(depart_list)
+        return { depart_tree, depart_ids, depart_list }
     }
 
 
+    // 查询-菜单树-根据-用户ID
     async find_menu_tree_by_user_id(user_id: string) {
         const role_list = await this.find_role_by_user_id(user_id)
         const depart_ids = await db_find_ids_self_and_parent({ db: db_typeorm, table_name: "sys_depart", ids: role_list.map((item) => item.id) })

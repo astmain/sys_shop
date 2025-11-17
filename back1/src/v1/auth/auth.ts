@@ -44,6 +44,13 @@ export class auth {
         return { code: 200, msg: '成功', result: { menu_tree, button_ids } }
     }
 
+
+    @Api_Post('查询-部门-根据-用户ID')
+    async find_depart_by_user_id(@Req() req: any) {
+        const { depart_tree, depart_ids, depart_list } = await this.auth_service.find_depart_by_user_id(req.user_id)
+        return { code: 200, msg: '成功', result: { depart_tree } }
+    }
+
     @Api_public()
     @Api_Post('初始化数据-菜单-部门-用户')
     async init_data_sys_menu_depart_user() {
