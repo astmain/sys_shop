@@ -23,8 +23,8 @@
       </el-form-item>
 
       <el-form-item label="部门树">
-        <el-tree ref="ElTreeRef" :data="BUS.depart_tree" node-key="id" :props="{ label: 'name' }"
-          :default-expand-all="true" show-checkbox :default-checked-keys="user_depart_role_ids" />
+        <el-tree ref="ElTreeRef" :data="depart_tree" node-key="id" :props="{ label: 'name' }" :default-expand-all="true"
+          show-checkbox :default-checked-keys="user_depart_role_ids" />
       </el-form-item>
     </el-form>
 
@@ -42,17 +42,19 @@ import { ElMessage } from "element-plus"
 let drawer_show = ref(false)
 let drawer_title = ref("")
 let user = ref({} as any)
+let depart_tree = ref()
 let user_depart_role_ids = ref([])
 let ElTreeRef = ref()
 
 // 打开交互窗口
 async function open(user_id: string) {
-  // user_depart_role_ids.value = [] //清空选中的树节点
+  user_depart_role_ids.value = [] //清空选中的树节点
   let res: any = await api_v1.user.find_one_user({ user_id })
   if (res.code != 200) return ElMessage.error(res.msg) //前置判断
   console.log("res", res)
   // user_depart_role_ids.value = res.result.user_depart_role_ids
   user.value = res.result.user
+  depart_tree.value = res.result.depart_tree
   drawer_show.value = true
 }
 

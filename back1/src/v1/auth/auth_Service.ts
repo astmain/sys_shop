@@ -34,6 +34,15 @@ export class auth_Service {
     }
 
 
+
+    // 查询-部门树
+    async find_depart_tree() {
+        const depart_list = await db_typeorm.find(sys_depart)
+        const depart_tree = db_build_tree(depart_list)
+        return { depart_tree }
+    }
+
+
     // 查询-菜单树-根据-用户ID
     async find_menu_tree_by_user_id(user_id: string) {
         const role_list = await this.find_role_by_user_id(user_id)
