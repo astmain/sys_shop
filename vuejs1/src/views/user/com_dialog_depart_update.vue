@@ -53,7 +53,7 @@ async function add_role() {
   form.role_list.push({ name: `职员${new Date().getTime()}`, id: `temp_role_${util_uuid9()}`, button_ids: [] })
 }
 
-// 提交保存
+// 打开窗口
 async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
   let res: any = await api_v1.menu.find_tree_menu()
@@ -65,6 +65,9 @@ async function open({ tree_node_curr }: { tree_node_curr: any }) {
   console.log(`res2---`, res2)
   form = res2.result.form
 }
+
+
+
 
 // 提交保存
 async function submit() {
