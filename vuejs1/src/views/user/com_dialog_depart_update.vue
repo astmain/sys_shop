@@ -78,12 +78,12 @@ async function submit() {
   }
   console.log("form---", JSON.parse(JSON.stringify(form)))
 
-  // let data = { depart_id: form.depart_id, depart_name: form.depart_name, role_list: form.role_list }
-  // if (form.depart_name.length < 1) return ElMessage.error("部门名称-必须要有")
-  // for (let item of form.role_list) {
-  //   if (item.name.length < 1) return ElMessage.error("角色名称-必须要有")
-  //   if (item.menu_button_ids.length < 1) return ElMessage.error("菜单按钮-必须要有")
-  // }
+  let data = { depart_id: form.depart_id, depart_name: form.depart_name, role_list: form.role_list }
+  if (form.depart_name.length < 1) return ElMessage.error("部门名称-必须要有")
+  for (let item of form.role_list) {
+    if (item.name.length < 1) return ElMessage.error("角色名称-必须要有")
+    if (item.button_ids.length < 1) return ElMessage.error("菜单按钮-必须要有")
+  }
   // console.log("data---", JSON.parse(JSON.stringify(data)))
 
   // let res: any = await api.depart.update_list_depart_role_menu(data)
