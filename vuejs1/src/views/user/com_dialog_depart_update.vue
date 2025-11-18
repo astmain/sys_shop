@@ -85,10 +85,10 @@ async function submit() {
   }
   // console.log("data---", JSON.parse(JSON.stringify(data)))
 
-  // let res: any = await api.depart.update_list_depart_role_menu(data)
-  // if (res.code != 200) return ElMessage.error(res.msg) //前置判断
-  // ElMessage.success(res.msg)
-  // show.value = false
+  let res: any = await api_v1.depart.edit_depart_role_menu(data)
+  if (res.code != 200) return ElMessage.error(res.msg) //前置判断
+  ElMessage.success(res.msg)
+  show.value = false
   // BUS.func.find_tree_depart()
 }
 

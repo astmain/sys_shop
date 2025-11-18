@@ -53,6 +53,7 @@ export let api_v1 = {
   },
 
   depart: {
+    edit_depart_role_menu: (form: { depart_id: string; depart_name: string; role_list: any[] }) => axios_api.post("/v1/depart/edit_depart_role_menu", form),
     find_depart_role: (form: { depart_id: string }) => axios_api.post("/v1/depart/find_depart_role", form),
     update_depart_role_menu: (form: { role_id: string; nodes_id: string[] }) => axios_api.post("/v1/depart/update_depart_role_menu", form),
     create_depart_menu: (form: { depart_parent_id: string; depart_name: string; role_name: string; menu_button_ids: string[] }) => axios_api.post("/v1/depart/create_depart_menu", form),
