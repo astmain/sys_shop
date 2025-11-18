@@ -43,25 +43,14 @@ export class auth_Service {
     async find_depart_role(depart_id: string) {
         // 使用 find 方法查询，然后手动提取 id 字段
         // const list_role_all = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id }, select: { id: true, name: true, status: false, type: false } })
-        const list_role_all = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id }, select: ["name", "id"] })
-        console.log(`list_role_all---`, list_role_all)
-        // 手动提取只包含 id 的对象
-        const list_role = list_role_all.map((item) => ({ id: item.id }))
-
-        console.log(`list_role111---`, list_role)
-
+        let list_role: any = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id } })
+        list_role = list_role.map((o) => ({ id: o.id, name: o.name }))
+        // console.log(`list_role111---`, list_role)
         let list = []
         for (let item of list_role) {
             const menu_ids = await db_typeorm.query(`SELECT DISTINCT menu_id FROM ref_depart_menu WHERE depart_id = $1`, [item.id])
             list.push({ ...item, menu_ids: menu_ids.map((m: any) => m.menu_id) })
         }
-
-
-
-
-
-
-        // const menu_ids = await db_typeorm.query(`SELECT DISTINCT menu_id FROM ref_depart_menu WHERE depart_id = ANY($1)`, [list_role.map((item) => item.id)])
         return { list_role: list }
     }
 
