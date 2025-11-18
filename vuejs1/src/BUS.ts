@@ -14,7 +14,7 @@ export const use_BUS = defineStore("localStorage_BUS", {
 
     VITE_url_app_list: [] as any[],
     token: "",
-    url_api_curr:{ name: "3004", url: "http://127.0.0.1:3004", remark: "" },
+    url_api_curr: { name: "3004", url: "http://127.0.0.1:3004", remark: "" },
     url_api_list: [
       { name: "3000", url: "http://127.0.0.1:3000", remark: "" },
       { name: "3001", url: "http://127.0.0.1:3001", remark: "" },
@@ -23,20 +23,10 @@ export const use_BUS = defineStore("localStorage_BUS", {
       { name: "8001", url: "http://127.0.0.1:8001/api", remark: "" },
       { name: "server.oss", url: "https://server.oss.yun3d.com", remark: "" },
     ],
-
-    // 字典
-    dict_obj: {
-      type_format: { children: [] },
-      type_area: { children: [] },
-      type_wiring: { children: [] },
-      type_uv: { children: [] },
-      type_check: { children: [] },
-    } as any,
-
     // 全局api
     func: {
-      tree_left_click: () => {},
-      find_tree_depart: () => {},
+      tree_left_click: () => { },
+      find_tree_depart: () => { },
     },
   }),
   persist: [
@@ -69,31 +59,5 @@ export const BUS = use_BUS()
 //@ts-ignore
 window.BUS = BUS
 
-// 字段
-setTimeout(() => {
-  find_list_dict()
-}, 0)
-async function find_list_dict() {
-  const res: any = await api_v1.dict.find_list_dict({})
-  console.log("find_list_dict---res", JSON.parse(JSON.stringify(res)))
-  //@ts-ignore
-  window.BUS.dict_obj = res.result.dict_obj
-}
 
-// const res: any = await api_v1.dict.find_list_dict({})
-// console.log("find_list_dict---res", JSON.parse(JSON.stringify(res)))
-// if (res.code != 200) return ElMessage.error(res.message)
-// dict_info.value = res.result.dict_obj
 
-import { z } from "zod"
-// import { createZodDto } from 'nestjs-zod'
-
-export const find_list_user_schema = z.object({
-  depart_id: z.string().describe("depart_id(部门id)"),
-})
-
-export type i_find_list_user = z.infer<typeof find_list_user_schema>
-
-// export class find_list_user_dto extends createZodDto(find_list_user_schema) {}
-
-let aaa: i_find_list_user

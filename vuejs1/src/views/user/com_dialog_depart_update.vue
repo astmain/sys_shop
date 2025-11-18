@@ -1,5 +1,6 @@
 <template>
-  <el-dialog v-model="show" :title="title || '未设置标题'" width="900" height="900" top="20px" draggable :close-on-click-modal="false">
+  <el-dialog v-model="show" :title="title || '未设置标题'" width="900" height="900" top="20px" draggable
+    :close-on-click-modal="false">
     <div style="height: 500px; overflow: auto; padding-right: 20px">
       <el-form label-width="120px">
         <el-form-item label="部门id" prop="name">
@@ -12,7 +13,9 @@
 
         <el-form-item v-for="(item, i) in form.role_list" :key="i" :label="`${i + 1}角色名称`">
           <el-input v-model="item.name" />
-          <el-tree show-checkbox :class="item.id" style="width: 100%; height: 200px; overflow: auto" :data="tree_menu" :default-checked-keys="item.menu_button_ids" :props="{ label: 'name' }" node-key="id" highlight-current default-expand-all>
+          <el-tree show-checkbox :data="tree_menu" :class="item.id" style="width: 100%; height: 200px; overflow: auto"
+            :default-checked-keys="item.menu_button_ids" :props="{ label: 'name' }" node-key="id" highlight-current
+            default-expand-all>
             <template #default="{ node, data }">
               <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
               <div v-else class="no_button font-bold text-base">{{ data.name }}</div>
@@ -33,9 +36,9 @@
 <script setup lang="tsx">
 import { ref } from "vue"
 import { BUS } from "@/BUS"
-// import { api } from "@/api"
 import { ElMessage } from "element-plus"
 import { util_uuid9 } from "@/plugins/util_uuid9"
+import { api_v1 } from "@/api_v1"
 
 let show = ref(false) //显示隐藏
 let tree_menu = ref([]) //树状菜单
@@ -43,7 +46,7 @@ let tree_menu = ref([]) //树状菜单
 let title = ref("") //标题
 let tree_node_curr: any = ref({}) //树状当前节点
 let form = $ref({ depart_id: tree_node_curr.value.depart_id, depart_name: "", role_list: [{ name: "职员", id: "ref_tree", kind: "update", menu_button_ids: [] }] })
-let callback = $ref(async () => {}) //回调函数
+let callback = $ref(async () => { }) //回调函数
 let render = $ref(() => <></>) // 渲染组件
 
 // 新增角色
@@ -54,16 +57,16 @@ async function add_role() {
 // 提交保存
 async function open() {
   show.value = true
-  // console.log("tree_node_curr.value.children---", JSON.parse(JSON.stringify(tree_node_curr.value.children)))
-  // let role_list: any[] = []
+  console.log("tree_node_curr.value.children---", JSON.parse(JSON.stringify(tree_node_curr.value.children)))
+  let role_list: any[] = []
   // for (let index = 0; index < tree_node_curr.value.children.length; index++) {
   //   const role = tree_node_curr.value.children[index]
   //   console.log("role---", JSON.parse(JSON.stringify(role)))
   //   role_list.push({ id: role.id, name: role.name, kind: "update", menu_button_ids: role.menu_button_ids })
   // }
   // form = { depart_id: tree_node_curr.value?.id, depart_name: tree_node_curr.value.name, role_list: role_list }
-  // let res: any = await api.depart.find_depart_menu({ role_id: tree_node_curr.value.id })
-  // tree_menu.value = res.result.menu_tree
+  let res: any = await api_v1.depart.find_tree_depart()
+  tree_menu.value = res.result.tree_depart
 }
 
 // 提交保存

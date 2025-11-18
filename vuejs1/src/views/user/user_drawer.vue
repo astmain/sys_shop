@@ -23,7 +23,7 @@
       </el-form-item>
 
       <el-form-item label="部门树">
-        <el-tree ref="ElTreeRef" :data="depart_tree" node-key="id" :props="{ label: 'name' }" :default-expand-all="true"
+        <el-tree ref="ElTreeRef" :data="tree_depart" node-key="id" :props="{ label: 'name' }" :default-expand-all="true"
           show-checkbox :default-checked-keys="role_ids" />
       </el-form-item>
     </el-form>
@@ -42,7 +42,7 @@ import { ElMessage } from "element-plus"
 let show = ref(false)
 let title = ref("")
 let user = ref({} as any)
-let depart_tree = ref()
+let tree_depart = ref()
 let role_ids = ref([])
 let ElTreeRef = ref()
 
@@ -55,7 +55,7 @@ async function open(user_id: string) {
   console.log("res", res)
   role_ids.value = res.result.role_ids
   user.value = res.result.user
-  depart_tree.value = res.result.depart_tree
+  tree_depart.value = res.result.tree_depart
 
 }
 

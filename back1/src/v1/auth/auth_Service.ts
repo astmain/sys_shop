@@ -36,10 +36,10 @@ export class auth_Service {
 
 
     // 查询-部门树
-    async find_depart_tree() {
-        const depart_list = await db_typeorm.find(sys_depart)
-        const depart_tree = db_build_tree(depart_list)
-        return { depart_tree }
+    async find_tree_depart() {
+        const list_depart = await db_typeorm.find(sys_depart)
+        const tree_depart = db_build_tree(list_depart)
+        return { tree_depart }
     }
 
 

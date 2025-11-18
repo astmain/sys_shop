@@ -44,14 +44,14 @@ export class user {
 
   @Api_Post('查询-单个-用户')
   async find_one_user(@Body() body: find_one_user, @Req() _req: any) {
-    console.log(`find_one_user---body:`, body)
+    // console.log(`find_one_user---body:`, body)
     const user = await db_typeorm.findOne(sys_user, { where: { user_id: body.user_id } })
     if (!user) return { code: 400, msg: '失败', result: {} }
-    const { depart_tree } = await this.auth_service.find_depart_tree()
+    const { tree_depart } = await this.auth_service.find_tree_depart()
     const role_list = await this.auth_service.find_role_by_user_id(body.user_id)
     const role_ids = role_list.map((item) => item.id)
-    console.log(`find_one_user---role_ids:`, role_ids)
-    return { code: 200, msg: '成功', result: { user, depart_tree, role_ids } }
+    // console.log(`find_one_user---role_ids:`, role_ids)
+    return { code: 200, msg: '成功', result: { user, tree_depart, role_ids } }
   }
 
 

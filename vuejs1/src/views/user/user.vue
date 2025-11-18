@@ -26,6 +26,8 @@
   </nav>
   <user_drawer ref="user_drawer_ref" />
   <Menu1 ref="Menu1Ref" :menu_list="menu_curr_list" />
+  <com_dialog_depart_create ref="ref_com_dialog_depart_create" />
+  <com_dialog_depart_update ref="ref_com_dialog_depart_update" />
 
 
 
@@ -35,8 +37,11 @@
 import { onMounted, ref } from "vue"
 import { ElMessage } from "element-plus"
 import { api_v1 } from "@/api_v1"
+import { BUS } from "@/BUS"
 import user_drawer from "./user_drawer.vue"
 import { plugin_confirm } from "@/plugins/plugin_confirm"
+import com_dialog_depart_create from "./com_dialog_depart_create.vue"
+import com_dialog_depart_update from "./com_dialog_depart_update.vue"
 import Menu1 from "./Menu1.vue"
 const ref_tree_depart = ref()
 const Menu1Ref = ref()
@@ -68,6 +73,7 @@ const menu_depart_role_list = ref([
   {
     label: "修改部门",
     click: async (item: any) => {
+      debugger
       ref_com_dialog_depart_update.value.title = item.label
       ref_com_dialog_depart_update.value.tree_node_curr = curr_depart_node.value
       ref_com_dialog_depart_update.value.open()
@@ -99,7 +105,7 @@ async function remove_ids_user(ids: string[]) {
   if (res.code === 200) {
     ElMessage.success(res.msg)
     await find_depart_by_user_id()
-    await tree_left_click(curr_depart_node.value)
+    await tree_left_click()
   } else {
     ElMessage.error(res.msg)
   }
@@ -109,19 +115,21 @@ async function remove_ids_user(ids: string[]) {
 
 
 
-
-async function tree_left_click(data: any) {
-  curr_depart_node.value = data
+// ✅用户管理树点击事件查询用户列表
+async function tree_left_click() {
+  Menu1Ref.value.hide_menu()
+  curr_depart_node.value = ref_tree_depart.value.getCurrentNode()
   console.log(`111---curr_depart_node.value:`, curr_depart_node.value)
   const res: any = await api_v1.auth.find_list_user({ depart_id: curr_depart_node.value.id })
   console.log(`111---res:`, res)
   list_user.value = res.result.list_user
 
 }
+BUS.func.tree_left_click = tree_left_click //全局BUS函数
 
 // ✅右键点击事件
 function tree_ritht_click(event: Event, item: any, node: any, nodeInstance: any) {
-  event.preventDefault() 
+  event.preventDefault()
   Menu1Ref.value.show_menu(event)
   curr_depart_node.value = item
   if (item.type === "company") {
