@@ -29,6 +29,7 @@ packages:
   - 'tools_dict'
   - 'tool_my'
   - 'tool_typeorm'
+  - 'tool_mikroorm'
 #首次gitbash设置邮箱和用户名0
 #git config --global user.email "1311192345@qq.com"
 #git config --global user.name "astmain"
