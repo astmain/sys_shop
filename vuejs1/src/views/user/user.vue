@@ -64,9 +64,10 @@ const menu_depart_role_list = ref([
   {
     label: "新增部门",
     click: async (item: any) => {
-      ref_com_dialog_depart_create.value.title = item.label
-      ref_com_dialog_depart_create.value.tree_node_curr = curr_depart_node.value
-      ref_com_dialog_depart_create.value.open()
+      // ref_com_dialog_depart_create.value.title = item.label
+      // ref_com_dialog_depart_create.value.open()
+      ref_com_dialog_depart_update.value.title = item.label
+      ref_com_dialog_depart_update.value.open({ tree_node_curr: curr_depart_node.value })
     },
   },
 
