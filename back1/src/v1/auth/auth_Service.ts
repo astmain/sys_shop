@@ -16,10 +16,7 @@ import { db_find_ids_self_and_children } from '@src/plugins/db_find_ids_self_and
 export class auth_Service {
     // 查询-角色-根据-用户ID
     async find_role_by_user_id(user_id: string) {
-        const role_list = await db_typeorm.createQueryBuilder()
-            .relation(sys_user, 'sys_depart')
-            .of(user_id)
-            .loadMany()
+        const role_list = await db_typeorm.createQueryBuilder().relation(sys_user, 'sys_depart').of(user_id).loadMany()
         return role_list
     }
 
@@ -40,6 +37,12 @@ export class auth_Service {
         const list_depart = await db_typeorm.find(sys_depart)
         const tree_depart = db_build_tree(list_depart)
         return { tree_depart }
+    }
+
+    // 查询-部门角色
+    async find_depart_role(depart_id: string) {
+        const list_role = await db_typeorm.findBy(sys_depart, { parent_id: depart_id })
+        return { list_role }
     }
 
 

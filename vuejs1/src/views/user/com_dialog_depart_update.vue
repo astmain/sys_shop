@@ -55,10 +55,12 @@ async function add_role() {
 }
 
 // 提交保存
-async function open() {
+async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
-  console.log("tree_node_curr.value.children---", JSON.parse(JSON.stringify(tree_node_curr.value.children)))
-  let role_list: any[] = []
+  // console.log("tree_node_curr.value.children---", JSON.parse(JSON.stringify(tree_node_curr.value.children)))
+  let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
+  debugger
+  form.role_list = res2.result.list_role
   // for (let index = 0; index < tree_node_curr.value.children.length; index++) {
   //   const role = tree_node_curr.value.children[index]
   //   console.log("role---", JSON.parse(JSON.stringify(role)))
