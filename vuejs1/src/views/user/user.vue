@@ -80,11 +80,7 @@ const menu_depart_role_list = ref([
   {
     label: "删除",
     click: async (item: any) => {
-      // if (!(await plugin_confirm())) return
-      // let res: any = await api.depart.delete_depart_role_ids({ ids: [curr_depart_node.value.id] })
-      // if (res.code != 200) return ElMessage.error(res.msg) //前置判断
-      // ElMessage.success(res.msg)
-      // await find_tree_depart()
+
     },
   },
 ])

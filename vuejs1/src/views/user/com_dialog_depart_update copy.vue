@@ -17,10 +17,8 @@
             :default-checked-keys="item.menu_button_ids" :props="{ label: 'name' }" node-key="id" highlight-current
             default-expand-all>
             <template #default="{ node, data }">
-              <div>{{ data.name }}--{{ item }}</div>
-              <!-- <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
               <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
-              <div v-else class="no_button font-bold text-base">{{ data.name }}</div> -->
+              <div v-else class="no_button font-bold text-base">{{ data.name }}</div>
             </template>
           </el-tree>
         </el-form-item>
@@ -96,7 +94,7 @@ async function open({ tree_node_curr }: { tree_node_curr: any }) {
         "at_updated": "2025-11-17 07:15:21.517",
         "name": "客户高级",
         "parent_id": "depart_1",
-        "menu_button_ids": ['/home:修改', '/home:删除']
+        "menu_button_ids": []
       }
     ]
   }

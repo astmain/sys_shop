@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt'
 
 
 // ================================== 数据库 ==================================
-// import { db_typeorm } from 'tool_typeorm'
+import { db_typeorm } from 'tool_typeorm'
 // import { sys_user } from 'tool_typeorm'
 // ================================== dto ==================================
 import { find_depart_role } from './dto/find_depart_role'
@@ -35,7 +35,12 @@ export class depart {
     @Api_Post('查询-部门-角色')
     async find_depart_role(@Body() body: find_depart_role, @Req() req: any) {
         const { list_role } = await this.auth_service.find_depart_role(body.depart_id)
-        return { code: 200, msg: '成功', result: { list_role } }
+        console.log(`list_role---`, list_role)
+        const role_ids = list_role.map((item) => item.id)
+        const menu_ids = await db_typeorm.query(`SELECT DISTINCT menu_id FROM ref_depart_menu WHERE depart_id = ANY($1)`, [role_ids])
+        console.log(`menu_ids---`, menu_ids)
+    
+        return { code: 200, msg: '成功', result: { list_role, menu_ids } }
     }
 
 
