@@ -4,6 +4,7 @@
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "noImplicitAny": false,//允许隐式 any，不会报错,如果变量/参数没有显式类型注解，且无法推断类型，会被视为 any 例如：nodes.map(o => o.id) 中的 o 如果没有类型注解，会被当作 any，不会报错
     "types": [
       "element-plus/global", //element-plus自动引入
       "@vue-macros/reactivity-transform/macros-global" //类型ReactivityTransform响应式数据$ref省略.value

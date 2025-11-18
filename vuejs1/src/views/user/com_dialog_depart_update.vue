@@ -56,48 +56,27 @@ async function add_role() {
 // 提交保存
 async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
-
-
   let res: any = await api_v1.menu.find_tree_menu()
   tree_menu.value = res.result.tree_menu
 
-  // form = {
-  //   depart_id: "", depart_name: "", role_list: [
-  //     {
-  //       "id": "role_1001",
-  //       "name": "客户普通",
-  //       "button_ids": ['/home:修改', '/home:删除']
-  //     },
-  //     {
-  //       "id": "role_1002",
-  //       "name": "客户高级",
-  //       "button_ids": ['/home:修改', '/home:删除']
-  //     }
-  //   ]
-  // }
-
-
-
-
+  // 测试数据
+  // form = {depart_id: "", depart_name: "", role_list: [{ "id": "role_1001", "name": "客户普通", "button_ids": ['/home:修改', '/home:删除'] }]  }
   let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
   console.log(`res2---`, res2)
   form = res2.result.form
-  // debugger
-
-
-
-
 }
 
 // 提交保存
 async function submit() {
-  // for (let item of form.role_list) {
-  //   //@ts-ignore
-  //   let ctx = document.querySelector(`.${item.id}`).__vueParentComponent.ctx
-  //   item.menu_button_ids = ctx.getCheckedKeys()
-  //   const nodes = ctx.getCheckedNodes() //获取选中节点
-  //   item.menu_button_ids = nodes.map((item: any) => (item.type === "button" ? item.id : undefined)).filter((item: any) => item !== undefined) //获取选中节点的id
-  // }
+  for (let item of form.role_list) {
+    //@ts-ignore
+    let ctx = document.querySelector(`.${item.id}`).__vueParentComponent.ctx
+    item.button_ids = ctx.getCheckedKeys()
+    const nodes = ctx.getCheckedNodes() //获取选中节点
+    // item.button_ids = nodes.map((item: any) => (item.type === "button" ? item.id : undefined)).filter((item: any) => item !== undefined) //获取选中节点的id
+    item.button_ids = nodes.map(o => o.id).filter(o => o !== undefined)
+  }
+  console.log("form---", JSON.parse(JSON.stringify(form)))
 
   // let data = { depart_id: form.depart_id, depart_name: form.depart_name, role_list: form.role_list }
   // if (form.depart_name.length < 1) return ElMessage.error("部门名称-必须要有")
