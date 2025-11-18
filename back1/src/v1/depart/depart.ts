@@ -14,8 +14,8 @@ import { sys_depart, sys_menu } from 'tool_typeorm'
 // ================================== dto ==================================
 import { find_depart_role } from './dto/find_depart_role'
 import { edit_depart_role_menu } from './dto/edit_depart_role_menu'
-
-
+// ================================== 工具 ==================================
+import { util_uuid9 } from '@src/plugins/util_uuid9'
 // ================================== 服务 ==================================
 import { auth_Service } from '../auth/auth_Service'
 
@@ -46,19 +46,31 @@ export class depart {
         const { depart_id, depart_name, role_list } = body
         console.log("body---", JSON.parse(JSON.stringify(body)))
         await db_typeorm.transaction(async (transaction) => {
-            await transaction.update(sys_depart, { id: depart_id }, { name: depart_name })
-            // console.log("role_list---", JSON.parse(JSON.stringify(role_list)))
+            if (depart_id) {
 
-
+                await transaction.update(sys_depart, { id: depart_id }, { name: depart_name })
+            }
+            else {
+                await transaction.save(sys_depart, { name: depart_name })
+            }
             for (let item of role_list) {
-                console.log("item---", JSON.parse(JSON.stringify(item)))
-                // 先查询旧的关联
-                const ref_list = await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_menu').of(item.id).loadMany()
-                console.log("ref_list---", JSON.parse(JSON.stringify(ref_list)))
+                // 如果角色ID为空，先创建角色记录
+                let role_id = item.id
+                if (!role_id || role_id.trim() === '') {
+                    role_id = `role_${util_uuid9()}`
+                    await transaction.save(sys_depart, { id: role_id, name: item.name, type: 'role', parent_id: depart_id, })
+                }
+                // 如果角色已存在，更新角色名称
+                else {
+                    await transaction.update(sys_depart, { id: role_id }, { name: item.name })
+                }
 
+                // 先查询旧的关联
+                const ref_list = await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).loadMany()
                 // 再删除旧的关联
-                await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_menu').of(item.id).remove([ref_list.map((o: any) => o.menu_id)])
-                await db_typeorm.createQueryBuilder().relation(sys_depart, 'sys_menu').of(item.id).add(item.button_ids)
+                await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).remove(ref_list.map((o: any) => o.id))
+                // 添加新的关联
+                await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).add(item.button_ids)
 
             }
 

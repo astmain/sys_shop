@@ -6,8 +6,7 @@ import { Transform } from 'class-transformer'
 export class edit_depart_role_menu {
   @ApiProperty({ description: '部门id', example: 'id1' })
   @IsString()
-  @IsNotEmpty()
-  depart_id: string
+  depart_id?: string
 
   @ApiProperty({ description: '部门名称', example: '名称' })
   @IsString()

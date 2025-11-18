@@ -50,7 +50,7 @@ let callback = $ref(async () => { }) //回调函数
 
 // 新增角色
 async function add_role() {
-  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `role_${util_uuid9()}`, button_ids: [] })
+  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `temp_role_${util_uuid9()}`, button_ids: [] })
 }
 
 // 提交保存
@@ -77,7 +77,7 @@ async function submit() {
   }
   console.log("form---", JSON.parse(JSON.stringify(form)))
 
-  let data = { depart_id: form.depart_id, depart_name: form.depart_name, role_list: form.role_list }
+  let data = { depart_id: form.depart_id, depart_name: form.depart_name, role_list: form.role_list.map((o: any) => ({ ...o, id: o.id.includes('temp_role_') ? "" : o.id })) }
   if (form.depart_name.length < 1) return ElMessage.error("部门名称-必须要有")
   for (let item of form.role_list) {
     if (item.name.length < 1) return ElMessage.error("角色名称-必须要有")
