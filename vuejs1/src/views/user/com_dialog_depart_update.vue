@@ -59,21 +59,17 @@ async function add_role() {
 // 提交保存
 async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
+
+  // let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
+  // form.role_list = res2.result.list_role
+
+  // console.log(`form.role_list---`, JSON.parse(JSON.stringify(form)))
+
   let res: any = await api_v1.menu.find_tree_menu()
   tree_menu.value = res.result.tree_menu
-  let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
-  form.role_list = res2.result.list_role
-  // form.role_list.forEach((item: any) => {
-  //   item.menu_button_ids = res2.result.menu_ids.filter((menu_id: any) => menu_id.includes(item.id))
-  // })
-
-  console.log(`form.role_list---`, JSON.parse(JSON.stringify(form)))
-
 
   form = {
-    "depart_id": tree_node_curr.value.id,
-    "depart_name": tree_node_curr.value.name,
-    "role_list": [
+    depart_id: "", depart_name: "", role_list: [
       {
         "id": "role_1001",
         "type": "role",
@@ -96,7 +92,7 @@ async function open({ tree_node_curr }: { tree_node_curr: any }) {
         "at_updated": "2025-11-17 07:15:21.517",
         "name": "客户高级",
         "parent_id": "depart_1",
-        "menu_button_ids": ['/home:修改', '/home:删除']
+        "menu_button_ids": ['/home:修改', '/home:删除'] as any
       }
     ]
   }
