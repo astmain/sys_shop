@@ -84,40 +84,14 @@ export class depart {
         const { parent_id, depart_name, role_list } = body
         console.log("body---", JSON.parse(JSON.stringify(body)))
         await db_typeorm.transaction(async (transaction) => {
-            // 创建部门，生成部门ID
-            const depart_id = `depart_${util_uuid9()}`
-            await transaction.save(sys_depart, { id: depart_id, name: depart_name, parent_id: parent_id, type: 'depart', })
-
-            // 创建角色并设置菜单关联
+            // 新增部门
+            const one_depart = await transaction.save(sys_depart, { id: `depart_${util_uuid9()}`, name: depart_name, parent_id: parent_id, type: 'depart', })
+            console.log("one_depart---", JSON.parse(JSON.stringify(one_depart)))
+            // 新增角色并设置菜单关联
             for (let item of role_list) {
-                console.log("item---", JSON.parse(JSON.stringify(item)))
-                // 如果角色ID为空，先创建角色记录
-                let role_id = item.id
-                if (!role_id || role_id.trim() === '') {
-                    role_id = `role_${util_uuid9()}`
-                    await transaction.save(sys_depart, {
-                        id: role_id,
-                        name: item.name,
-                        type: 'role',
-                        parent_id: depart_id,
-                    })
-                } else {
-                    // 如果角色已存在，更新角色名称和父部门
-                    await transaction.update(sys_depart, { id: role_id }, { name: item.name, parent_id: depart_id })
-                }
-
-                // 先查询旧的关联
-                const ref_list = await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).loadMany()
-                // 再删除旧的关联
-                if (ref_list.length > 0) {
-                    await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).remove(ref_list.map((o: any) => o.id))
-                }
-                // 添加新的关联
-                if (item.button_ids && item.button_ids.length > 0) {
-                    await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(role_id).add(item.button_ids)
-                }
+                const one_role = await transaction.save(sys_depart, { id: `role_${util_uuid9()}`, name: item.name, type: 'role', parent_id: one_depart.id, })
+                await transaction.createQueryBuilder().relation(sys_depart, 'sys_menu').of(one_role.id).add(item.button_ids)
             }
-
         })
         return { code: 200, msg: '成功', result: {} }
     }
