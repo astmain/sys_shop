@@ -36,7 +36,7 @@ export class sys_depart extends at_timestamp {
 
 
 
-  @Column({ default: "depart" })
+  @Column({ default: "depart", select: false })
   @ApiProperty({ description: '类型', example: 'depart' })
   @IsString()
   @IsNotEmpty()
@@ -44,12 +44,12 @@ export class sys_depart extends at_timestamp {
   type: string = 'depart'
 
 
-  @Column({ default: "" })
+  @Column({ default: "", select: false })
   @ApiProperty({ description: '备注', example: "" })
   @IsString()
   remark: string = ""
 
-  @Column({ default: 0 })
+  @Column({ default: 0, select: false })
   @ApiProperty({ description: '排序', example: 0 })
   @IsInt()
   @IsNotEmpty()
@@ -57,7 +57,7 @@ export class sys_depart extends at_timestamp {
   sort: number = 0
 
 
-  @Column({ default: true })
+  @Column({ default: true, select: false })
   @ApiProperty({ description: '状态', example: true })
   @IsBoolean()
   status: boolean = true
