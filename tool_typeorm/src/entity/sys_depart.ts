@@ -31,7 +31,6 @@ export class sys_depart extends at_timestamp {
   @Column()
   @ApiProperty({ description: '菜单名称', example: '首页' })
   @IsString()
-  @IsNotEmpty()
   name: string
 
 

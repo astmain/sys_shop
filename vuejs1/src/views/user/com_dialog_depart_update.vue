@@ -17,10 +17,8 @@
             :default-checked-keys="item.menu_button_ids" :props="{ label: 'name' }" node-key="id" highlight-current
             default-expand-all>
             <template #default="{ node, data }">
-              <div>{{ data.name }}--{{ item }}</div>
-              <!-- <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
               <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
-              <div v-else class="no_button font-bold text-base">{{ data.name }}</div> -->
+              <div v-else class="no_button font-bold text-base">{{ data.name }}</div>
             </template>
           </el-tree>
         </el-form-item>
@@ -46,24 +44,19 @@ let show = ref(false) //显示隐藏
 let tree_menu = ref([]) //树状菜单
 
 let title = ref("") //标题
-let tree_node_curr: any = ref({}) //树状当前节点
-let form = $ref({ depart_id: tree_node_curr.value.depart_id, depart_name: "", role_list: [{ name: "职员", id: "ref_tree", type: "", remark: "", parent_id: "", sort: 0, status: true, at_created: new Date().toISOString(), at_updated: new Date().toISOString(), menu_button_ids: [] }] })
+let form = $ref({ depart_id: "", depart_name: "", role_list: [{ name: "", id: "", type: "", remark: "", parent_id: "", sort: 0, status: true, menu_button_ids: [""] }] })
 let callback = $ref(async () => { }) //回调函数
-let render = $ref(() => <></>) // 渲染组件
+
 
 // 新增角色
 async function add_role() {
-  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `role_${util_uuid9()}`, type: "", remark: "", sort: 0, status: true, parent_id: "", at_created: new Date().toISOString(), at_updated: new Date().toISOString(), menu_button_ids: [] })
+  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `role_${util_uuid9()}`, type: "", remark: "", sort: 0, status: true, parent_id: "", menu_button_ids: [] })
 }
 
 // 提交保存
 async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
-
-  // let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
-  // form.role_list = res2.result.list_role
-
-  // console.log(`form.role_list---`, JSON.parse(JSON.stringify(form)))
+  debugger
 
   let res: any = await api_v1.menu.find_tree_menu()
   tree_menu.value = res.result.tree_menu
@@ -76,8 +69,6 @@ async function open({ tree_node_curr }: { tree_node_curr: any }) {
         "remark": "",
         "sort": 0,
         "status": true,
-        "at_created": "2025-11-17 07:15:21.517",
-        "at_updated": "2025-11-17 07:15:21.517",
         "name": "客户普通",
         "parent_id": "depart_1",
         "menu_button_ids": ['/home:修改', '/home:删除']
@@ -88,14 +79,18 @@ async function open({ tree_node_curr }: { tree_node_curr: any }) {
         "remark": "",
         "sort": 0,
         "status": true,
-        "at_created": "2025-11-17 07:15:21.517",
-        "at_updated": "2025-11-17 07:15:21.517",
         "name": "客户高级",
         "parent_id": "depart_1",
         "menu_button_ids": ['/home:修改', '/home:删除'] as any
       }
     ]
   }
+
+
+
+
+  let res2: any = await api_v1.depart. find_depart_role({ depart_id: tree_node_curr.id })
+  console.log(`res2---`, res2)
 
 
 
@@ -129,7 +124,7 @@ async function submit() {
 }
 
 // 暴露方法给父组件调用
-defineExpose({ show, title, open, submit, callback, render, tree_node_curr })
+defineExpose({ show, title, open, submit, callback })
 </script>
 
 <style>

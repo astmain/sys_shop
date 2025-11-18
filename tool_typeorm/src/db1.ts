@@ -15,3 +15,12 @@ export const db1_connect = new DataSource({
 
 export const db1 = db1_connect.manager
 
+
+name()
+async function name() {
+  const list = await db1_connect.getRepository(sys_depart).find({ where: { parent_id: "depart_1" }, select: ["name", "id"] })
+  console.log(`list---`, list)
+}
+
+
+
