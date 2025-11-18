@@ -73,8 +73,7 @@ async function submit() {
     let ctx = document.querySelector(`.${item.id}`).__vueParentComponent.ctx
     item.button_ids = ctx.getCheckedKeys()
     const nodes = ctx.getCheckedNodes() //获取选中节点
-    // item.button_ids = nodes.map((item: any) => (item.type === "button" ? item.id : undefined)).filter((item: any) => item !== undefined) //获取选中节点的id
-    item.button_ids = nodes.map(o => o.id).filter(o => o !== undefined)
+    item.button_ids = nodes.map(o => o.id.includes(':') ? o.id : undefined).filter(o => o !== undefined)
   }
   console.log("form---", JSON.parse(JSON.stringify(form)))
 
