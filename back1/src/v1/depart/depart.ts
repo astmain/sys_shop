@@ -34,8 +34,8 @@ export class depart {
 
     @Api_Post('查询-部门-角色')
     async find_depart_role(@Body() body: find_depart_role, @Req() req: any) {
-        const { list_role } = await this.auth_service.find_depart_role(body.depart_id)
-        return { code: 200, msg: '成功', result: { list_role } }
+        const { list_role, form } = await this.auth_service.find_depart_role(body.depart_id)
+        return { code: 200, msg: '成功', result: { list_role, form } }
     }
 
 

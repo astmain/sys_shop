@@ -14,7 +14,7 @@
         <el-form-item v-for="(item, i) in form.role_list" :key="i" :label="`${i + 1}角色名称`">
           <el-input v-model="item.name" />
           <el-tree show-checkbox :data="tree_menu" :class="item.id" style="width: 100%; height: 200px; overflow: auto"
-            :default-checked-keys="item.menu_button_ids" :props="{ label: 'name' }" node-key="id" highlight-current
+            :default-checked-keys="item.button_ids" :props="{ label: 'name' }" node-key="id" highlight-current
             default-expand-all>
             <template #default="{ node, data }">
               <div v-if="data.type === 'button'" class="ok_button">{{ data.name }}</div>
@@ -44,54 +44,45 @@ let show = ref(false) //显示隐藏
 let tree_menu = ref([]) //树状菜单
 
 let title = ref("") //标题
-let form = $ref({ depart_id: "", depart_name: "", role_list: [{ name: "", id: "", type: "", remark: "", parent_id: "", sort: 0, status: true, menu_button_ids: [""] }] })
+let form = $ref({ depart_id: "", depart_name: "", role_list: [{ name: "", id: "", button_ids: [""] }] })
 let callback = $ref(async () => { }) //回调函数
 
 
 // 新增角色
 async function add_role() {
-  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `role_${util_uuid9()}`, type: "", remark: "", sort: 0, status: true, parent_id: "", menu_button_ids: [] })
+  form.role_list.push({ name: `职员${new Date().getTime()}`, id: `role_${util_uuid9()}`, button_ids: [] })
 }
 
 // 提交保存
 async function open({ tree_node_curr }: { tree_node_curr: any }) {
   show.value = true
-  debugger
+
 
   let res: any = await api_v1.menu.find_tree_menu()
   tree_menu.value = res.result.tree_menu
 
-  form = {
-    depart_id: "", depart_name: "", role_list: [
-      {
-        "id": "role_1001",
-        "type": "role",
-        "remark": "",
-        "sort": 0,
-        "status": true,
-        "name": "客户普通",
-        "parent_id": "depart_1",
-        "menu_button_ids": ['/home:修改', '/home:删除']
-      },
-      {
-        "id": "role_1002",
-        "type": "role",
-        "remark": "",
-        "sort": 0,
-        "status": true,
-        "name": "客户高级",
-        "parent_id": "depart_1",
-        "menu_button_ids": ['/home:修改', '/home:删除'] as any
-      }
-    ]
-  }
+  // form = {
+  //   depart_id: "", depart_name: "", role_list: [
+  //     {
+  //       "id": "role_1001",
+  //       "name": "客户普通",
+  //       "button_ids": ['/home:修改', '/home:删除']
+  //     },
+  //     {
+  //       "id": "role_1002",
+  //       "name": "客户高级",
+  //       "button_ids": ['/home:修改', '/home:删除']
+  //     }
+  //   ]
+  // }
 
 
 
 
-  let res2: any = await api_v1.depart. find_depart_role({ depart_id: tree_node_curr.id })
+  let res2: any = await api_v1.depart.find_depart_role({ depart_id: tree_node_curr.id })
   console.log(`res2---`, res2)
-
+  form = res2.result.form
+  // debugger
 
 
 

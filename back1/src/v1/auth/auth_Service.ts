@@ -41,17 +41,28 @@ export class auth_Service {
 
     // 查询-部门角色
     async find_depart_role(depart_id: string) {
-        // 使用 find 方法查询，然后手动提取 id 字段
-        // const list_role_all = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id }, select: { id: true, name: true, status: false, type: false } })
-        let list_role: any = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id } })
-        list_role = list_role.map((o) => ({ id: o.id, name: o.name }))
-        // console.log(`list_role111---`, list_role)
+        // // 使用 find 方法查询，然后手动提取 id 字段
+        // // const list_role_all = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id }, select: { id: true, name: true, status: false, type: false } })
+        // let list_role: any = await db_typeorm.find(sys_depart, { where: { parent_id: depart_id } })
+        // list_role = list_role.map((o) => ({ id: o.id, name: o.name }))
+        // // console.log(`list_role111---`, list_role)
+        const depart = await db_typeorm.findOne(sys_depart, { where: { id: depart_id } })
+        let list_role = await db_typeorm.getRepository(sys_depart).createQueryBuilder().select('id').addSelect('name').where('parent_id = :parent_id', { parent_id: depart_id }).getRawMany()
+
+
         let list = []
         for (let item of list_role) {
-            const menu_ids = await db_typeorm.query(`SELECT DISTINCT menu_id FROM ref_depart_menu WHERE depart_id = $1`, [item.id])
-            list.push({ ...item, menu_ids: menu_ids.map((m: any) => m.menu_id) })
+            const list_button = await db_typeorm.query(`SELECT DISTINCT menu_id FROM ref_depart_menu WHERE depart_id = $1`, [item.id])
+            list.push({ ...item, button_ids: list_button.map((m: any) => m.menu_id) })
         }
-        return { list_role: list }
+
+
+
+        const form = {
+            depart_id: depart_id, depart_name: depart.name, role_list: list
+        }
+
+        return { list_role: list, form }
     }
 
 
