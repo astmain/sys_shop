@@ -7,5 +7,9 @@ export class tb_test1 {
 
   @Property({ type: 'varchar' })
   name: string
+
+
+  @Property({ type: 'varchar' })
+  age: string
 }
 
